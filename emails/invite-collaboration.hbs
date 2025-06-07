@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting Invitation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Montserrat', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: white;
+    }
+    
+    .header-image {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+    }
+    
+    .curve-container {
+      position: relative;
+      height: 50px;
+      overflow: hidden;
+      margin-top: -20px;
+    }
+    
+    .curve {
+      position: absolute;
+      width: 100%;
+      height: 100px;
+      background-color: white;
+      border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+      transform: translateY(-50px);
+      border-top: 4px solid #FFC857;
+    }
+    
+    .content {
+      padding: 0 20px 30px;
+      text-align: center;
+    }
+    
+    .title {
+      font-size: 36px;
+      font-weight: 700;
+      color: #1A2B5F;
+      margin: 0;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+    
+    .subtitle {
+      font-size: 28px;
+      color: #1A2B5F;
+      margin: 0 0 30px;
+      text-transform: uppercase;
+    }
+    
+    .details-box {
+      border: 2px solid #FFC857;
+      border-radius: 15px;
+      padding: 15px;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #FFFDF7;
+    }
+    
+    .date-time {
+      display: flex;
+      align-items: center;
+      text-align: left;
+    }
+    
+    .date-icon, .time-icon {
+      color: #1A2B5F;
+      font-size: 18px;
+      margin-right: 10px;
+    }
+    
+    .date-month {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1A2B5F;
+    }
+    
+    .date-day {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1A2B5F;
+      line-height: 1;
+    }
+    
+    .date-year {
+      font-size: 16px;
+      color: #1A2B5F;
+    }
+    
+    .time-at {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1A2B5F;
+    }
+    
+    .time-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1A2B5F;
+      line-height: 1;
+    }
+    
+    .location {
+      text-align: left;
+      padding-left: 20px;
+      border-left: 1px solid #ddd;
+      color: #1A2B5F;
+      font-size: 14px;
+      max-width: 50%;
+    }
+    
+    .reminder-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 30px 0;
+    }
+    
+    .time-reminder {
+      background-color: #FFC857;
+      color: #1A2B5F;
+      font-weight: 700;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      line-height: 1.2;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    
+    .info-section {
+      text-align: left;
+      color: #1A2B5F;
+    }
+    
+    .info-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .info-value {
+      margin-bottom: 15px;
+    }
+    
+    .meeting-link {
+      display: inline-block;
+      background-color: #1A2B5F;
+      color: white;
+      text-decoration: none;
+      padding: 12px 30px;
+      border-radius: 30px;
+      font-weight: 600;
+      margin-top: 20px;
+    }
+    
+    .footer {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #f5f5f5;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .circle-decoration {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: #1A2B5F;
+      opacity: 0.8;
+    }
+    
+    .circle-1 {
+      bottom: 50px;
+      left: -40px;
+    }
+    
+    .circle-2 {
+      top: 100px;
+      right: -30px;
+      width: 60px;
+      height: 60px;
+    }
+    
+    .circle-3 {
+      bottom: 150px;
+      right: -20px;
+      width: 40px;
+      height: 40px;
+      background-color: #FFC857;
+    }
+    
+    .circle-outline {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid #FFC857;
+      opacity: 0.6;
+    }
+    
+    .circle-outline-1 {
+      bottom: 30px;
+      left: -60px;
+    }
+    
+    .circle-outline-2 {
+      top: 80px;
+      right: -50px;
+    }
+    
+    @media only screen and (max-width: 480px) {
+      .details-box {
+        flex-direction: column;
+      }
+      
+      .location {
+        border-left: none;
+        border-top: 1px solid #ddd;
+        padding-left: 0;
+        padding-top: 10px;
+        margin-top: 10px;
+        max-width: 100%;
+        text-align: center;
+      }
+      
+      .date-time {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+      
+      .reminder-section {
+        flex-direction: column;
+      }
+      
+      .time-reminder {
+        margin-bottom: 20px;
+      }
+      
+      .info-section {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div style="position: relative; overflow: hidden;">
+      <div class="content">
+        <h1 class="title">COLLABORATION</h1>
+        <h2 class="subtitle">INVITATION</h2>
+
+        <!-- Collaboration details box -->
+        <div class="details-box">
+          <div class="date-time">
+            <div style="margin-right: 20px;">
+              <div class="date-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A2B5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+              </div>
+              <div class="date-month">{{month}}</div>
+              <div class="date-day">{{day}}</div>
+              <div class="date-year">{{year}}</div>
+            </div>
+
+            <div>
+              <div class="time-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A2B5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <div class="time-at">AT</div>
+              <div class="time-value">{{time}}</div>
+            </div>
+          </div>
+
+          <div class="location">
+            {{location}}<br>
+            <small>Timezone: {{timezone}}</small>
+          </div>
+        </div>
+
+        <!-- Reminder and info section -->
+        <div class="reminder-section">
+          <div class="info-section">
+            <div class="info-title">Collaboration Details:</div>
+            <div class="info-value">
+              <strong>Topic:</strong> {{topic}}<br>
+              <strong>Organizer:</strong> {{organizerName}}<br>
+              <strong>Contact:</strong> {{organizerContact}}<br>
+              <strong>Platform:</strong> {{platform}}
+            </div>
+
+            {{#if description}}
+            <div class="info-title">Description:</div>
+            <div class="info-value">{{description}}</div>
+            {{/if}}
+          </div>
+        </div>
+
+        <!-- Collaboration link button -->
+        <a href="{{collaborationLink}}" class="meeting-link">JOIN COLLABORATION</a>
+      </div>
+
+      <div class="footer">
+        <p>This is an automated message. Please do not reply to this email.</p>
+        <p>If you have any questions, please contact the collaboration organizer.</p>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+

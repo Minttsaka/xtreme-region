@@ -1,0 +1,47 @@
+.wrapper {
+    width: 100%;
+    overflow: hidden;
+    /* background-color: #000; */
+    padding: 2rem 0;
+  }
+  
+  .container {
+    display: flex;
+    animation: scroll 40s linear infinite;
+    white-space: nowrap;
+  }
+  
+  .item {
+    display: inline-flex;
+    margin-right: 2rem;
+    font-size: 4rem;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .outline {
+    color: transparent;
+    -webkit-text-stroke: 1px #fff;
+  }
+  
+  .filled {
+    color: #fff;
+    margin-left: 1rem;
+  }
+  
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .item {
+      font-size: 2rem;
+    }
+  }
+  
+  

@@ -1,0 +1,954 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+ 
+generator client {
+  provider = "prisma-client-js"
+}
+ 
+model User {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String?         @unique
+  emailVerified DateTime?
+  password      String?
+  address       String?
+  isVerified    Boolean @default(false)
+  currentQualification  String?
+  image         String?
+  bio           String?
+  phone         String?
+  career        String?       @default("Instructor")
+  staff         Staff[]
+  classes       ClassToTeacher[]
+  attended      Participants[]
+  views         View[]
+  likes         Like[]
+  subject       Subject[]
+  reviewLike     ReviewLike[]
+  comments      Comment[]
+  review        Review[]
+  notificationView NotificationView[]
+  subscriptions Subscription[]
+  accounts      Account[] 
+  sessions      Session[]
+  notifications Notification[]
+  collaborations Collaborators[]
+  channels      Channel[]
+  slideComment SlideComment[]
+  Authenticator Authenticator[]
+  completeArena CompleteArena[]
+  rating      Rating[]
+  meetings Meeting[] @relation("HostedMeetings")
+  lesson       Lesson[] @relation("UserCourses")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+model Channel {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  courses     UserCourse[]
+  views         View[]
+  likes         Like[]
+  thumbnail     String?
+  comments      Comment[]
+  review        Review[]
+  subscriptions Subscription[]
+  rating      Rating[]
+  isFeatured    Boolean   @default(false)
+  isActive    Boolean   @default(true)
+  userId      String    @db.ObjectId
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model View {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String?    @db.ObjectId
+  user       User?      @relation(fields: [userId], references: [id], onDelete: Cascade)  
+  // Reference to viewed content (only one of these will be set)
+  channelId  String?    @db.ObjectId
+  channel    Channel?   @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  courseId   String?    @db.ObjectId
+  course     UserCourse? @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonId   String?    @db.ObjectId
+  lesson     Lesson?    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  createdAt  DateTime   @default(now())
+
+  @@index([userId])
+  @@index([channelId])
+  @@index([courseId])
+  @@index([lessonId])
+  @@index([createdAt])
+}
+
+model Like {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String     @db.ObjectId
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Reference to liked content (only one of these will be set)
+  channelId  String?    @db.ObjectId
+  channel    Channel?   @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  courseId   String?    @db.ObjectId
+  course     UserCourse? @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonId   String?    @db.ObjectId
+  lesson     Lesson?    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  
+  createdAt  DateTime   @default(now())
+
+  @@unique([userId, channelId, courseId, lessonId]) // Ensure a user can only like once
+  @@index([userId])
+  @@index([channelId])
+  @@index([courseId])
+  @@index([lessonId])
+}
+
+model Comment {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  content    String
+  userId     String     @db.ObjectId
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Reference to commented content (only one of these will be set)
+  channelId  String?    @db.ObjectId
+  channel    Channel?   @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  courseId   String?    @db.ObjectId
+  course     UserCourse? @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonId   String?    @db.ObjectId
+  lesson     Lesson?    @relation(fields: [lessonId], references: [id], onDelete: Cascade) 
+  isEdited   Boolean    @default(false)
+  isHidden   Boolean    @default(false) // For moderation
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([channelId])
+  @@index([courseId])
+  @@index([createdAt])
+}
+
+enum RevenueSource {
+  SUBSCRIPTION
+  DONATION
+  ADVERTISEMENT
+  COURSE_SALE
+  AFFILIATE
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+model Payment {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  amount       Float
+  currency     String        @default("USD")
+  source       RevenueSource
+  description  String?
+  paymentId    String?       // External payment reference
+  paymentStatus PaymentStatus @default(PENDING)
+  
+  courseId    String        @db.ObjectId
+  course      UserCourse    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  // Optional reference to the subscription that generated this revenue
+  subscriptionId String?     @db.ObjectId
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([source])
+  @@index([createdAt])
+  @@index([paymentStatus])
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PENDING
+}
+
+enum SubscriptionTier {
+  FREE
+  BASIC
+  PREMIUM
+  PRO
+}
+
+model Subscription {
+  id           String             @id @default(auto()) @map("_id") @db.ObjectId
+  status       SubscriptionStatus @default(ACTIVE)
+  tier         SubscriptionTier   @default(FREE)
+
+  paymentId    String? @db.ObjectId
+  payment       Payment[]
+  
+  userId       String             @db.ObjectId
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  channelId    String?             @db.ObjectId
+  channel      Channel?            @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  courseId    String?             @db.ObjectId
+  course      UserCourse?            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  startDate    DateTime           @default(now())
+  endDate      DateTime?
+    
+  // Revenue records generated by this subscription  
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+}
+
+model Student {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName   String
+  middleName   String
+  surname     String
+  gender     Gender
+  dob        DateTime
+  admissionNumber String @unique
+  performance Performance[]
+  school     School   @relation(fields: [schoolId], references: [id])
+  schoolId   String
+  class       Class?    @relation(fields: [classId], references: [id])
+  classId     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Performance {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  student     Student       @relation(fields: [studentId], references: [id])
+  studentId   String
+  subjectId   String
+  term        AcademicTerm  @relation(fields: [termId], references: [id])
+  termId      String
+  score       Float
+  remarks     String?
+  createdAt   DateTime      @default(now())
+}
+
+
+model Staff {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  user       User       @relation(fields: [userId], references: [id])
+  userId     String     @unique
+  school     School     @relation(fields: [schoolId], references: [id])
+  schoolId   String
+  role       StaffRole
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+
+enum StaffRole {
+  TEACHER
+  HEADMASTER
+  ADMIN
+}
+ 
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@unique([provider, providerAccountId])
+}
+ 
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+ 
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@unique([identifier, token])
+}
+ 
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @id @map("_id")
+  userId               String  @db.ObjectId
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@unique([userId, credentialID])
+}
+
+enum MeetingType {
+  LESSON
+  MEETING
+}
+
+model Meeting {
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  topic            String
+  startDate        DateTime @default(now())
+  startTime        DateTime @default(now())
+  duration         Int // in minutes
+  timeZone         String
+  description      String
+  type             MeetingType?
+  participants     Participants[]
+  agendaItems      AgendaItem[]
+  collaborators    Collaborators[]
+  agenda           Boolean   @default(false)
+  muteVideo        Boolean   @default(false)
+  muteAudio        Boolean   @default(true)
+  transcription    Boolean   @default(false)
+  recurring        Boolean   @default(false)
+  recurringType    String?   // daily, weekly, monthly
+  endDate          DateTime? // for recurring meetings
+  hostId           String    @db.ObjectId
+  lessonId         String?
+  lesson           Lesson?    @relation(fields: [lessonId], references: [id])
+  host             User      @relation("HostedMeetings", fields: [hostId], references: [id])
+  files            Files[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+enum MeetingPriority {
+  low
+  medium
+  high
+}
+
+enum MeetingStatus {
+  progress
+  completed
+  skipped
+  pending
+}
+
+model AgendaItem {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  duration    Int
+  description String?
+  presenter   String?
+  status      MeetingStatus       @default(pending) // pending, in-progress, completed, skipped
+  priority    MeetingPriority       @default(medium) 
+  notes       String?
+  meeting     Meeting      @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  meetingId   String       @db.ObjectId
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Participants {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  meetingId String
+  userId    String
+  meeting   Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+enum CollaborationStatus {
+  pending
+  accepted
+  declined
+}
+
+enum CollaborationType {
+  MEETING
+  COURSE
+}
+
+model Collaborators {
+
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  meetingId String?
+  courseId String?
+  userId    String
+  type      CollaborationType @default(MEETING)
+  meeting   Meeting?  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  status    CollaborationStatus @default(pending)
+  course   UserCourse?  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+
+}
+
+model Files {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  uploder   String
+  name      String
+  type      String
+  url      String?
+  lessonId  String?
+  meetingId String
+  meeting   Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  lesson   Lesson?  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model School {
+  id                 String     @id @default(auto()) @map("_id") @db.ObjectId
+  name               String
+  registrationNumber String     @unique
+  type               SchoolType // PUBLIC, PRIVATE, MISSION
+  ownership          String     // e.g., "Government", "Catholic Church", "Individual"
+  headmaster         String
+  district           String
+  region             String     // e.g., Northern, Central, Southern
+  address            String
+  location           String     // GPS coordinates or physical description
+  email              String?    @unique
+  phone              String?
+  website            String?
+  logoUrl            String?
+  staff              Staff[]
+  students           Student[]
+  accreditation      Boolean    @default(false)
+  dateFounded        DateTime
+  educationLevel     EducationLevel @relation(fields: [educationLevelId], references: [id], onDelete:Cascade)
+  educationLevelId   String
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+}
+
+enum Level {
+  PRIMARY
+  SECONDARY
+  TERTIARY
+}
+
+model EducationLevel {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  name      Level
+  school    School[]
+  classes   Class[]
+}
+
+
+enum SchoolType {
+  PUBLIC
+  PRIVATE
+  MISSION
+}
+
+model ClassToTeacher {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  teacherId         String
+  teacher           User     @relation(fields: [teacherId], references: [id], onDelete:Cascade)
+  classId   String
+  classes           Class @relation(fields:[classId], references:[id])
+  createdAt         DateTime   @default(now())
+}
+
+
+model SubjectToClass {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  subjectId         String?
+  courses           Course[]
+  userCourse        UserCourse[]
+  subject           Subject? @relation(fields: [subjectId], references: [id])
+  classId           String?
+  class             Class? @relation(fields: [classId], references: [id])
+  createdAt         DateTime   @default(now())
+}
+
+model Subject {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  name       String     @unique
+  description String?
+  class    SubjectToClass[]
+  resource    ResourceToSubject[]
+  userId      String
+  creator     User   @relation(fields: [userId], references: [id])
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Course {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  thumbnail   String?
+  content     String?
+  userId      String
+  userEmail   String
+  subjectId   String
+  subject     SubjectToClass    @relation(fields: [subjectId], references: [id])
+  userCourse  UserCourse[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Class {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  name              Int      
+  educationLevel    EducationLevel @relation(fields: [educationLevelId], references: [id])
+  educationLevelId  String
+  classToTeacher    ClassToTeacher[]
+  academicTerms     ClassToTerm[]
+  students          Student[]
+  subjects          SubjectToClass[]
+  createdAt         DateTime   @default(now())
+}
+
+model ClassToTerm {
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  AcademicTermId    String
+  AcademicTerm      AcademicTerm @relation(fields: [AcademicTermId], references: [id])
+  classId           String
+  class             Class @relation(fields: [classId], references: [id])
+  createdAt         DateTime   @default(now())
+}
+
+model AcademicTerm {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       Int   @unique
+  startDate  DateTime
+  endDate    DateTime                                                                                                                                          
+  performance Performance[]
+  class       ClassToTerm[]
+  isCurrent  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Author {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  firstName String
+  lastName  String
+  middleName String?
+  resources Resource[]
+  createdAt     DateTime @default(now())
+}
+
+model ResourceToSubject {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  resourceId        String
+  resource          Resource @relation(fields: [resourceId], references: [id])
+  subjectId         String
+  subject           Subject @relation(fields: [subjectId], references: [id])
+  createdAt         DateTime   @default(now())
+}
+
+enum ResourceType {
+  BOOK
+  ARTICLE
+  WEBSITE
+  JOURNAL
+  MAGAZINE
+  REPORT
+  THESIS
+}
+
+model Resource {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  subtitle      String?
+  thumbnail     String?
+  authorId      String
+  authors       Author  @relation(fields: [authorId], references: [id])
+  publisher     String?
+  publicationDate DateTime?
+  publicationPlace String?
+  resourceType  ResourceType
+  edition       String?
+  volume        String?
+  issue         String?
+  pages         String?
+  doi           String? // for articles
+  isbn          String? // for books
+  url           String?
+  accessedDate  DateTime?
+  fileUrl       String?
+  lessonId      String?
+  subject       ResourceToSubject[]
+  lesson        LessonToResource[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model UserCourse {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  courseId  String
+  channelId    String
+  title       String
+  isFeatured  Boolean @default(false)
+  thumbnail   String?
+  averageRating Int? @default(0)
+  totalReviews  Int? @default(0)
+  content     String?
+  subjectToClassId  String
+  amount      Float?
+  accessLevel AccessLevel
+  payment  Payment[]
+  views      View[]
+  likes      Like[]
+  approvalStatus      LessonApproval @default(PENDING)
+  review     Review[]
+  collaborations Collaborators[]
+  enrollment  Subscription[]
+  rating      Rating[]
+  comments    Comment[]
+  notification Notification[]
+  completeArena CompleteArena[]
+  subjectToClass   SubjectToClass  @relation(fields: [subjectToClassId], references: [id])
+  channel      Channel   @relation(fields: [channelId], references: [id])
+  course      Course  @relation(fields: [courseId], references: [id])
+  lessons     Lesson[]
+  startDate   DateTime   // 📅 Course start date
+  duration    Int        // ⏱ Duration in minutes
+  participants Int       @default(0) // 👥 Enrolled count
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model Review {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  lessonId      String?
+  lesson        Lesson?         @relation(fields: [lessonId], references: [id])
+  courseId      String?
+  course        UserCourse?         @relation(fields: [courseId], references: [id])
+  channelId      String?
+  channel        Channel?         @relation(fields: [channelId], references: [id])
+  content        String
+  reviewLike     ReviewLike[]
+  rating         Int
+  helpfulCount    Int? @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+
+enum ReviewLikeType {
+  HELPFUL
+  UNHELPFUL
+}
+
+model ReviewLike {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  reviewId    String?
+  review      Review?         @relation(fields: [reviewId], references: [id])
+  type        ReviewLikeType
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt 
+}
+
+enum AccessLevel {
+  PUBLIC
+  REGISTERED_USERS
+  ENROLLED_ONLY
+}
+
+model LessonToResource {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  resourceId        String
+  resource          Resource @relation(fields: [resourceId], references: [id], onDelete:Cascade)
+  lessonId          String
+  lesson            Lesson @relation(fields: [lessonId], references: [id], onDelete:Cascade)
+  createdAt         DateTime   @default(now())
+}
+
+
+enum LessonApproval {
+  PENDING
+  APPROVED
+  DISAPPROVED
+}
+
+model Lesson {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  isPaid            Boolean  @default(false)
+  price             Float?   // if isPaid is true
+  accessLevel       AccessLevel @default(PUBLIC)
+  allowComments     Boolean  @default(false)
+  downloadableResources Boolean @default(false)
+  description String
+  meeting      Meeting[]
+  files       Files[]
+  views       View[]
+  likes       Like[]
+  approvalStatus      LessonApproval @default(PENDING)
+  review     Review[]
+  comments    Comment[]
+  resources   LessonToResource[]
+  statusDescription StatusDescription[]
+  rating      Rating[]
+  thumbnail   String?
+  status      LessonStatus @default(NOT_STARTED)
+  duration    Int?        // in minutes
+  hostedDate  DateTime @default(now())
+  totalStudents Int?   
+  courseId      String
+  slides      Slide[]
+  finalSlide       FinalSlide[]
+  highlights  PDFHighlight[]
+  completeArena CompleteArena[]
+  isFeatured    Boolean   @default(false)
+  course        UserCourse @relation(fields: [courseId], references: [id])
+  userId        String   @db.ObjectId
+  user          User     @relation("UserCourses", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StatusDescription {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  description       String
+  lessonId          String?
+  lesson            Lesson? @relation(fields: [lessonId], references: [id], onDelete:Cascade)
+  createdAt         DateTime   @default(now())
+}
+
+enum CompletedArenaType {
+  COURSE
+  LESSON
+  SLIDE
+}
+
+enum CompletedArenaLevel {
+  IN_PROGRESS
+  COMPLETED
+}
+
+model CompleteArena {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  type              CompletedArenaType
+  level             CompletedArenaLevel
+  userId            String
+  user              User @relation(fields: [userId], references: [id], onDelete:Cascade)
+  courseId          String?
+  course            UserCourse? @relation(fields: [courseId], references: [id], onDelete:Cascade)
+  lessonId          String?
+  lesson            Lesson? @relation(fields: [lessonId], references: [id], onDelete:Cascade)
+  finalSlideId           String?
+  finalSlide             FinalSlide? @relation(fields: [finalSlideId], references: [id], onDelete:Cascade)
+  createdAt         DateTime   @default(now())
+}
+
+enum LessonStatus {
+  COMPLETED
+  IN_PROGRESS
+  NOT_STARTED
+}
+
+model PDFHighlight {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  content        String
+  quote          String
+  color          String
+  highlightAreas Json     // Store the HighlightArea[] as JSON
+  lesson         Lesson   @relation(fields: [lessonId], references: [id])
+  lessonId       String   
+  resourceId     String   
+  notes          Note[]   // One highlight can be used in multiple notes
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+
+model Note {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  content      String
+  type         NoteType     @default(text)
+  source       String?      // Optional URL or reference
+  highlight    PDFHighlight? @relation(fields: [highlightId], references: [id], onDelete:Cascade)
+  highlightId  String?      @db.ObjectId // Optional - not all notes come from highlights
+  slide        Slide?        @relation(fields: [slideId], references: [id], onDelete:Cascade)
+  slideId      String?    
+  finalSlide        FinalSlide?        @relation(fields: [finalSlideId], references: [id], onDelete:Cascade)
+  finalSlideId      String?    
+  order        Int          @default(0) // For ordering notes within a slide
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model Slide {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String?
+  notes     Note[]
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete:Cascade)
+  lessonId  String
+  SlideComment SlideComment[]
+  theme     SlideTheme?
+  order     Int      @default(0) // For ordering slides within a lesson
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FinalSlide {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String?
+  notes     Note[]
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete:Cascade)
+  lessonId  String
+  theme     SlideTheme?
+  completeArena CompleteArena[]
+  order     Int      @default(0) // For ordering slides within a lesson
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SlideTheme {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String?
+  primary    String
+  secondary  String
+  background String
+  text       String
+  slide      Slide    @relation(fields: [slideId], references: [id], onDelete:Cascade)
+  slideId    String   @db.ObjectId @unique
+  finalSlide      FinalSlide    @relation(fields: [finalSlideId], references: [id], onDelete:Cascade)
+  finalSlideId    String   @db.ObjectId @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+enum NoteType {
+  text
+  image
+  video
+}
+
+model SlideComment {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  text          String
+  userId        String
+  slideId       String
+  sender        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  slide        Slide      @relation(fields: [slideId], references: [id], onDelete: Cascade)
+  timestamp     DateTime  @default(now())
+  reactions     Reaction[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Reaction {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  emoji     String
+  user      String
+  commentId String   @db.ObjectId
+  comment   SlideComment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@index([commentId])
+}
+
+model Rating {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String 
+  lessonId  String?
+  channelId String?
+  courseId  String?
+  rating    Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson    Lesson?   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  channel   Channel?  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  course    UserCourse?  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum Category {
+  GENERAL
+  ASSIGNMENT
+  EXAM
+  SCHEDULE
+  RESOURCE
+  REMINDER
+}
+
+enum Role {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+}
+
+model Notification {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  content       String
+  priority      Priority  @default(NORMAL)
+  isPinned      Boolean   @default(false)
+  category      Category  @default(GENERAL)  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  targetedAudience  AccessLevel @default(PUBLIC)
+  authorId      String    @db.ObjectId
+  author        User      @relation(fields: [authorId], references: [id])
+  courseId      String?    @db.ObjectId
+  course        UserCourse?   @relation(fields: [courseId], references: [id])
+  
+  // Tracking
+  viewedBy      NotificationView[]
+  
+}
+
+model NotificationView {
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  notificationId String      @db.ObjectId
+  notification   Notification @relation(fields: [notificationId], references: [id])
+  userId      String      @db.ObjectId
+  user        User        @relation(fields: [userId], references: [id])
+  viewedAt       DateTime    @default(now())
+}
+

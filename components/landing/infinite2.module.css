@@ -1,0 +1,63 @@
+.wrapper {
+    width: 100%;
+    overflow: hidden;
+    padding: 2rem 0;
+  }
+  
+  .container {
+    display: flex;
+    white-space: nowrap;
+    margin-bottom: 1rem;
+  }
+  
+  .scrollRight {
+    animation: scrollRight 40s linear infinite;
+  }
+  
+  .scrollLeft {
+    animation: scrollLeft 40s linear infinite;
+  }
+  
+  .item {
+    display: inline-flex;
+    margin-right: 2rem;
+    font-size: 4rem;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .outline {
+    color: transparent;
+    -webkit-text-stroke: 1px black;
+  }
+  
+  .filled {
+    color: black;
+    margin-left: 1rem;
+  }
+  
+  @keyframes scrollRight {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  
+  @keyframes scrollLeft {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .item {
+      font-size: 2rem;
+    }
+  }
+  
+  
