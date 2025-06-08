@@ -13,9 +13,9 @@ import {
   Send,
   X,
   ChevronRight,
-  Sparkles,
   Bot,
   User,
+  ArrowUp,
 
 } from "lucide-react"
 
@@ -23,7 +23,7 @@ import {
 const supportAgent = {
   name: "XTREME REGION",
   role: "Customer Support",
-  avatar: "/placeholder.svg?height=80&width=80",
+  avatar: "https://cdn-icons-png.flaticon.com/512/6963/6963705.png?height=80&width=80",
   isOnline: true,
 }
 
@@ -106,7 +106,7 @@ export default function SupportChat() {
       setMessages([
         {
           id: "welcome",
-          content: `Hi there! 👋 I'm ${supportAgent.name} from the support team. How can I help you today?`,
+          content: `Hi there! 👋 Im Miracle from the support team. How can I help you today? Whats your email?`,
           sender: "agent",
           timestamp: new Date(),
         },
@@ -429,12 +429,12 @@ export default function SupportChat() {
                     size="icon"
                     className="h-10 w-10 rounded-full border-gray-200"
                   >
-                    <Sparkles className="h-4 w-4 text-blue-500" />
+                    <ArrowUp className="h-4 w-4 text-blue-500" />
                   </Button>
                   <Button
                     onClick={handleSendMessage}
                     disabled={!inputValue.trim()}
-                    className="h-10 w-10 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center"
+                    className="h-10 w-10 rounded-full bg-green-500 hover:bg-green-300 flex items-center justify-center"
                   >
                     <Send className="h-4 w-4 text-white" />
                   </Button>

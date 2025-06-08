@@ -240,7 +240,7 @@ export function SpotlightReview() {
                   </div>
 
                   <p className="text-gray-700 relative z-10 mb-4">
-                    Register and manage your school more efficiently like a pro and reduce cost by 60%.
+                    Register and manage your school more efficiently like a pro and reduce cost by 60%. Monetize your tutoring skills with us.
                   </p>
 
                   {/* Tech specs */}

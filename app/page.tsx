@@ -1,12 +1,11 @@
 
-import { AnimatedTestimonialsDemo } from "@/components/landing/AnimatedTestimonialsDemo";
+import { Suspense } from 'react';
 import { InfiniteScroll } from "@/components/landing/FirstBlog";
 import { GoogleGeminiEffectDemo } from "@/components/landing/Gemini";
 import  { TimelineDemo } from "@/components/landing/InnovativeEdTechSection";
 import { SpotlightReview } from "@/components/landing/SportLight";
 import TrustedBy from "@/components/landing/TrustedBy";
 import { AutoTriggerTabs } from "@/components/landing/auto-trigger-tabs";
-import VideoBackground from "@/components/landing/VideoBackground";
 import EdutechFeatures from "@/components/landing/EdutechFeatures";
 import ScrollableFeatures from "@/components/landing/DraggableFeatures";
 import { SatisfiedCustomers } from "@/components/landing/SatisfiedCustomers";
@@ -50,11 +49,13 @@ export default  async function Home() {
       <BlogSection />
       <AutoTriggerTabs />
       <TimelineDemo />
-      <main className="relative overflow-hidden bg-black text-white">
+      {/* <main className="relative overflow-hidden bg-black text-white">
         <VideoBackground />
          <AnimatedTestimonialsDemo />
-      </main>
-      <SupportChat />
+      </main> */}
+      <Suspense fallback={<div>Loading...</div>}>
+       <SupportChat />
+      </Suspense>
       <GoogleGeminiEffectDemo />
       <Footer />
       <EnhancedFooter />

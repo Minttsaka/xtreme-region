@@ -7,36 +7,20 @@ import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
 const testimonials = [
   {
     id: 1,
-    name: "Sarah Johnson",
-    company: "TechCorp Inc.",
-    image: "/placeholder.svg?height=100&width=100",
-    quote: "This platform revolutionized our online learning experience. Our students are more engaged than ever!",
+    name: "Hilda Mtenje",
+    company: "MUST",
+    image: "/img/hilda.jpg?height=100&width=100",
+    quote: "This platform revolutionized online learning experience. Students awill be more engaged than ever!",
     rating: 5
   },
   {
     id: 2,
-    name: "Michael Chen",
-    company: "EduTech Solutions",
-    image: "/placeholder.svg?height=100&width=100",
-    quote: "The AI-driven personalization has significantly improved our course completion rates. Highly recommended!",
+    name: "Travor Panaya",
+    company: "MUBAS",
+    image: "/img/travor.jpg?height=100&width=100",
+    quote: "The video conference experience is amazing. Highly recommended!",
     rating: 5
   },
-  {
-    id: 3,
-    name: "Emily Rodriguez",
-    company: "Global Learning Institute",
-    image: "/placeholder.svg?height=100&width=100",
-    quote: "The seamless integration and scalability have allowed us to reach students worldwide effortlessly.",
-    rating: 4
-  },
-  {
-    id: 4,
-    name: "David Patel",
-    company: "InnoLearn Academy",
-    image: "/placeholder.svg?height=100&width=100",
-    quote: "Our instructors love the intuitive interface and powerful analytics. It's a game-changer for online education.",
-    rating: 5
-  }
 ]
 
 export const SatisfiedCustomers: React.FC = () => {
@@ -111,7 +95,7 @@ export const SatisfiedCustomers: React.FC = () => {
                 paginate(-1)
               }
             }}
-            className="absolute w-full h-full flex flex-col justify-center items-center bg-neutral-800 bg-opacity-10 backdrop-blur-lg rounded-3xl p-8 shadow cursor-grab active:cursor-grabbing"
+            className="absolute w-full h-full flex flex-col justify-center items-center text-white bg-neutral-800 bg-opacity-10 backdrop-blur-lg rounded-3xl p-8 shadow cursor-grab active:cursor-grabbing"
           >
             <img src={testimonials[currentIndex].image || "/placeholder.svg"} alt={testimonials[currentIndex].name} className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md" />
             <blockquote className="text-lg md:text-xl text-center my-6 italic leading-relaxed">{testimonials[currentIndex].quote}</blockquote>

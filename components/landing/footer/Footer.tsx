@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button"
 import {ArrowRight } from 'lucide-react'
+import Link from "next/link"
 
 export default function Footer() {
   return (
@@ -24,14 +25,18 @@ export default function Footer() {
             Start your journey
           </h1>
           <p className="mt-4 text-3xl font-light text-white/90 sm:text-4xl md:text-5xl">
-            with Tiptap
+            with xtreme region
           </p>
           <Button 
             className="mt-8 rounded-full bg-white px-8 text-black hover:bg-white/90"
             size="lg"
           >
-            Get started now
-            <ArrowRight className="ml-2 h-4 w-4" />
+            <Link
+            className="flex gap-2 items-center"
+              href={'/i/dashboard'}>
+              Get started now
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
           </Button>
         </div>
       </div>

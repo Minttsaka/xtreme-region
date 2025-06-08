@@ -5,6 +5,10 @@ import { Card, CardContent } from "@/components/ui/card"
 import { useConversation } from "@11labs/react";
 import { Button } from "../ui/button";
 import { Mic, MicOff, Square } from "lucide-react";
+import { toast } from "sonner";
+import { useUsageTracker } from "@/app/hook/use-usage-tracker";
+import { UsageDisplay } from "./UsageDisplay";
+import { UpgradeModal } from "./UpgradeModal";
 
 interface AIAssistantProps {
   title:string
@@ -20,6 +24,28 @@ export function AIAssistant({
 
   const [hasPermission, setHasPermission] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isConversationActive, setIsConversationActive] = useState(false)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+
+  const {
+    usageData,
+    currentSessionTime,
+    isTracking,
+    hasFullAccess,
+    startTracking,
+    stopTracking,
+    getRemainingTime,
+    canStartConversation,
+    resetUsage,
+    maxUsageSeconds,
+  } = useUsageTracker()
+
+    useEffect(() => {
+    if (isTracking && !hasFullAccess && getRemainingTime() <= 0) {
+      handleEndConversation()
+      setShowUpgradeModal(true)
+    }
+  }, [currentSessionTime, isTracking, hasFullAccess])
 
   const conversation = useConversation({
     onConnect: () => {
@@ -30,6 +56,7 @@ export function AIAssistant({
     },
     onError: (error: string | Error) => {
       setErrorMessage(typeof error === "string" ? error : error.message);
+      toast(errorMessage)
       console.error("Error:", error);
     },
   });
@@ -53,6 +80,17 @@ export function AIAssistant({
 
   const handleStartConversation = async () => {
     try {
+
+      if (!canStartConversation()) {
+        setShowUpgradeModal(true)
+        return
+      }
+
+      if (!startTracking()) {
+        setShowUpgradeModal(true)
+        return
+      }
+
       // Replace with your actual agent ID or URL
       await conversation.startSession({
         agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID!,
@@ -75,6 +113,10 @@ export function AIAssistant({
 
   const handleEndConversation = async () => {
     try {
+
+      setIsConversationActive(false)
+      stopTracking()
+
       await conversation.endSession();
     } catch (error) {
       setErrorMessage("Failed to end conversation");
@@ -85,6 +127,13 @@ export function AIAssistant({
   return (
     <Card className="absolute top-1 right-1 h-fit bg-white/95 backdrop-blur-xl border border-blue-200 shadow-xl rounded-full shadow-blue-500/10">
       <CardContent className="p-2 flex items-center justify-between gap-2">
+        <UsageDisplay
+          currentTime={currentSessionTime}
+          totalUsed={usageData?.totalUsed || 0}
+          maxTime={maxUsageSeconds}
+          isTracking={isTracking}
+          hasFullAccess={hasFullAccess}
+        />
 
         <div className="flex items-center space-x-2">
  
@@ -127,6 +176,12 @@ export function AIAssistant({
           )}
           </div>
         </div>
+        <UpgradeModal
+          isOpen={showUpgradeModal}
+          onClose={() => setShowUpgradeModal(false)}
+          usedTime={(usageData?.totalUsed || 0) + currentSessionTime}
+          maxTime={maxUsageSeconds}
+        />
       </CardContent>
     </Card>
   )

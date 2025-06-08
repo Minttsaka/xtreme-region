@@ -285,7 +285,7 @@ const HoverMenu = ({ content, isVisible }: { content: MenuContent; isVisible: bo
             <div className="flex items-center justify-between">
               <p className="text-xs text-gray-500">
                 Need help?{" "}
-                <Link href="/support" className="text-blue-600 hover:text-blue-700">
+                <Link href="/?support=true" className="text-blue-600 hover:text-blue-700">
                   Contact support
                 </Link>
               </p>
@@ -358,9 +358,9 @@ export default function NavBar() {
 
           <div className="hidden lg:flex items-center space-x-4">
             <div className="flex items-center gap-x-3 xs:gap-x-6">
-              <a
+              <Link
                 className="relative focus-visible:outline outline-[rgba(0,0,0,0.64)] rounded-xl outline-offset-[3px] inline-block"
-                href="/?q=support"
+                href="/?support=true"
               >
                 <div className="text-gray-800 font-sm justify-center flex flex-nowrap whitespace-nowrap transition-translate duration-300 cursor-pointer group items-center h-full group leading-[150%] text-sm px-[30px] py-2">
                   Contact Support{" "}
@@ -369,10 +369,10 @@ export default function NavBar() {
                   </span>
                 </div>
                 <span className="after:content-[''] after:inline-block absolute inset-0 after:inset-0 after:absolute select-none pointer-events-none after:rounded-[11px] rounded-[11px] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)] after:shadow-[inset_0_0_0_1px_rgba(0,139,255,0.2)]"></span>
-              </a>
+              </Link>
             </div>
             <div className="flex items-center gap-x-3 xs:gap-x-6">
-              <a
+              <Link
                 className="relative focus-visible:outline outline-[rgba(0,0,0,0.64)] rounded-xl outline-offset-[3px] inline-block"
                 href="/i/dashboard"
               >
@@ -383,7 +383,7 @@ export default function NavBar() {
                   </span>
                 </div>
                 <span className="after:content-[''] after:inline-block absolute inset-0 after:inset-0 after:absolute select-none pointer-events-none after:rounded-[11px] rounded-[11px] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)] after:shadow-[inset_0_0_0_1px_rgba(0,139,255,0.2)]"></span>
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -505,7 +505,7 @@ const MobileMenuWithSubmenu = ({ item }: { item: any }) => {
                           <div className="flex-shrink-0">
                             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden">
                               <Image
-                                src={subItem.image || "/placeholder.svg"}
+                                src={ "/placeholder.svg"}
                                 alt={subItem.name}
                                 width={40}
                                 height={40}

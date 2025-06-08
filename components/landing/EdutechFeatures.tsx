@@ -1,9 +1,6 @@
 import Link from "next/link"
-import { MessageSquare, } from "lucide-react"
-
 import { CustomButton } from "../ui/CustomButton"
 import { Prisma } from "@prisma/client"
-import DemoLesson from "../lesson/DemoLesson"
 import DemoLessonDialog from "../lesson/DemoDialog"
 
 type Lesson = Prisma.LessonGetPayload<{
@@ -48,7 +45,7 @@ export default function EducationFeatures({lesson}:{lesson:Lesson}) {
                 </div>
                 <div className="flex flex-wrap gap-4">
                   <CustomButton hasArrow={true} variant="outline" size="lg" className="gap-2 hover:text-white">
-                    <Link href="/demo">Start Learning</Link>
+                    <Link href="/i/channel">Start Learning</Link>
                   </CustomButton>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-8">
@@ -72,11 +69,13 @@ export default function EducationFeatures({lesson}:{lesson:Lesson}) {
                 <div className="relative bg-card rounded-2xl border p-6 shadow-2xl">
                   <DemoLessonDialog lesson={lesson}/>
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                    </div>
-                    <div className="aspect-[4/3] rounded-lg bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 flex items-center justify-center">
-                      <MessageSquare className="h-24 w-24 text-primary/40" />
-                    </div>
+                    <img
+                      src="/img/demo-img.png"
+                      alt="Video Chat"
+                      width={500}
+                      height={400}
+                      className="rounded-3xl w-full"
+                    />
                     <div className="grid grid-cols-3 gap-4">
                       {[1, 2, 3].map((i) => (
                         <div key={i} className="space-y-2">
