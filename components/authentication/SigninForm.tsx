@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 //import { useSearchParams } from "next/navigation"
 import { Eye, EyeOff } from "lucide-react"
 import { useActionState } from "react"
-import { authenticate } from "@/app/actions/auth"
+import { authenticate, loginWithGoogle } from "@/app/actions/auth"
 import { CustomButton } from "@/components/ui/CustomButton"
 import {  CheckCircle } from "lucide-react"
 import { checkConferenceAuth } from "@/app/utils/helpers"
@@ -68,7 +68,7 @@ export function SigninForm() {
 
   const signWithGoogle = async () => {
     try {
-      await signIn()
+      await loginWithGoogle()
       window.location.reload()
     } catch (error) {
       console.error(error)

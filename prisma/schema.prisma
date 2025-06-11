@@ -169,7 +169,7 @@ model Payment {
   
   // Optional reference to the subscription that generated this revenue
   subscriptionId String?     @db.ObjectId
-  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete:Cascade)
   
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -228,9 +228,9 @@ model Student {
   dob        DateTime
   admissionNumber String @unique
   performance Performance[]
-  school     School   @relation(fields: [schoolId], references: [id])
+  school     School   @relation(fields: [schoolId], references: [id], onDelete:Cascade)
   schoolId   String
-  class       Class?    @relation(fields: [classId], references: [id])
+  class       Class?    @relation(fields: [classId], references: [id], onDelete:Cascade)
   classId     String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -238,10 +238,10 @@ model Student {
 
 model Performance {
   id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  student     Student       @relation(fields: [studentId], references: [id])
+  student     Student       @relation(fields: [studentId], references: [id], onDelete:Cascade)
   studentId   String
   subjectId   String
-  term        AcademicTerm  @relation(fields: [termId], references: [id])
+  term        AcademicTerm  @relation(fields: [termId], references: [id], onDelete:Cascade)
   termId      String
   score       Float
   remarks     String?
@@ -251,9 +251,9 @@ model Performance {
 
 model Staff {
   id         String     @id @default(auto()) @map("_id") @db.ObjectId
-  user       User       @relation(fields: [userId], references: [id])
+  user       User       @relation(fields: [userId], references: [id], onDelete:Cascade)
   userId     String     @unique
-  school     School     @relation(fields: [schoolId], references: [id])
+  school     School     @relation(fields: [schoolId], references: [id], onDelete:Cascade)
   schoolId   String
   role       StaffRole
   createdAt  DateTime   @default(now())
@@ -351,8 +351,8 @@ model Meeting {
   endDate          DateTime? // for recurring meetings
   hostId           String    @db.ObjectId
   lessonId         String?
-  lesson           Lesson?    @relation(fields: [lessonId], references: [id])
-  host             User      @relation("HostedMeetings", fields: [hostId], references: [id])
+  lesson           Lesson?    @relation(fields: [lessonId], references: [id], onDelete:Cascade)
+  host             User      @relation("HostedMeetings", fields: [hostId], references: [id], onDelete:Cascade)
   files            Files[]
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
@@ -497,9 +497,9 @@ model SubjectToClass {
   subjectId         String?
   courses           Course[]
   userCourse        UserCourse[]
-  subject           Subject? @relation(fields: [subjectId], references: [id])
+  subject           Subject? @relation(fields: [subjectId], references: [id], onDelete:Cascade)
   classId           String?
-  class             Class? @relation(fields: [classId], references: [id])
+  class             Class? @relation(fields: [classId], references: [id], onDelete:Cascade)
   createdAt         DateTime   @default(now())
 }
 
@@ -510,7 +510,7 @@ model Subject {
   class    SubjectToClass[]
   resource    ResourceToSubject[]
   userId      String
-  creator     User   @relation(fields: [userId], references: [id])
+  creator     User   @relation(fields: [userId], references: [id], onDelete:Cascade)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 }
@@ -523,7 +523,7 @@ model Course {
   userId      String
   userEmail   String
   subjectId   String
-  subject     SubjectToClass    @relation(fields: [subjectId], references: [id])
+  subject     SubjectToClass    @relation(fields: [subjectId], references: [id], onDelete:Cascade)
   userCourse  UserCourse[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -532,7 +532,7 @@ model Course {
 model Class {
   id                String    @id @default(auto()) @map("_id") @db.ObjectId
   name              Int      
-  educationLevel    EducationLevel @relation(fields: [educationLevelId], references: [id])
+  educationLevel    EducationLevel @relation(fields: [educationLevelId], references: [id], onDelete:Cascade)
   educationLevelId  String
   classToTeacher    ClassToTeacher[]
   academicTerms     ClassToTerm[]
@@ -544,9 +544,9 @@ model Class {
 model ClassToTerm {
   id               String    @id @default(auto()) @map("_id") @db.ObjectId
   AcademicTermId    String
-  AcademicTerm      AcademicTerm @relation(fields: [AcademicTermId], references: [id])
+  AcademicTerm      AcademicTerm @relation(fields: [AcademicTermId], references: [id], onDelete:Cascade)
   classId           String
-  class             Class @relation(fields: [classId], references: [id])
+  class             Class @relation(fields: [classId], references: [id], onDelete:Cascade)
   createdAt         DateTime   @default(now())
 }
 
@@ -574,9 +574,9 @@ model Author {
 model ResourceToSubject {
   id                String    @id @default(auto()) @map("_id") @db.ObjectId
   resourceId        String
-  resource          Resource @relation(fields: [resourceId], references: [id])
+  resource          Resource @relation(fields: [resourceId], references: [id], onDelete:Cascade)
   subjectId         String
-  subject           Subject @relation(fields: [subjectId], references: [id])
+  subject           Subject @relation(fields: [subjectId], references: [id], onDelete:Cascade)
   createdAt         DateTime   @default(now())
 }
 
@@ -596,7 +596,7 @@ model Resource {
   subtitle      String?
   thumbnail     String?
   authorId      String
-  authors       Author  @relation(fields: [authorId], references: [id])
+  authors       Author  @relation(fields: [authorId], references: [id], onDelete:Cascade)
   publisher     String?
   publicationDate DateTime?
   publicationPlace String?
@@ -634,7 +634,7 @@ model UserCourse {
   views      View[]
   likes      Like[]
   userId      String
-  user      User  @relation(fields: [userId], references: [id])
+  user      User  @relation(fields: [userId], references: [id], onDelete:Cascade)
   approvalStatus      LessonApproval @default(PENDING)
   review     Review[]
   collaborations Collaborators[]
@@ -643,9 +643,9 @@ model UserCourse {
   comments    Comment[]
   notification Notification[]
   completeArena CompleteArena[]
-  subjectToClass   SubjectToClass  @relation(fields: [subjectToClassId], references: [id])
-  channel      Channel   @relation(fields: [channelId], references: [id])
-  course      Course  @relation(fields: [courseId], references: [id])
+  subjectToClass   SubjectToClass  @relation(fields: [subjectToClassId], references: [id], onDelete:Cascade)
+  channel      Channel   @relation(fields: [channelId], references: [id], onDelete:Cascade)
+  course      Course  @relation(fields: [courseId], references: [id], onDelete:Cascade)
   lessons     Lesson[]
   startDate   DateTime   // 📅 Course start date
   duration    Int        // ⏱ Duration in minutes
@@ -658,13 +658,13 @@ model UserCourse {
 model Review {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   userId      String
-  user        User         @relation(fields: [userId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete:Cascade)
   lessonId      String?
-  lesson        Lesson?         @relation(fields: [lessonId], references: [id])
+  lesson        Lesson?         @relation(fields: [lessonId], references: [id], onDelete:Cascade)
   courseId      String?
-  course        UserCourse?         @relation(fields: [courseId], references: [id])
+  course        UserCourse?         @relation(fields: [courseId], references: [id], onDelete:Cascade)
   channelId      String?
-  channel        Channel?         @relation(fields: [channelId], references: [id])
+  channel        Channel?         @relation(fields: [channelId], references: [id], onDelete:Cascade)
   content        String
   reviewLike     ReviewLike[]
   rating         Int
@@ -682,9 +682,9 @@ enum ReviewLikeType {
 model ReviewLike {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   userId      String
-  user        User         @relation(fields: [userId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete:Cascade)
   reviewId    String?
-  review      Review?         @relation(fields: [reviewId], references: [id])
+  review      Review?         @relation(fields: [reviewId], references: [id], onDelete:Cascade)
   type        ReviewLikeType
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt 
@@ -742,7 +742,7 @@ model Lesson {
   highlights  PDFHighlight[]
   completeArena CompleteArena[]
   isFeatured    Boolean   @default(false)
-  course        UserCourse @relation(fields: [courseId], references: [id])
+  course        UserCourse @relation(fields: [courseId], references: [id], onDelete:Cascade)
   userId        String   @db.ObjectId
   user          User     @relation("UserCourses", fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
@@ -795,7 +795,7 @@ model PDFHighlight {
   quote          String
   color          String
   highlightAreas Json     // Store the HighlightArea[] as JSON
-  lesson         Lesson   @relation(fields: [lessonId], references: [id])
+  lesson         Lesson   @relation(fields: [lessonId], references: [id], onDelete:Cascade)
   lessonId       String   
   resourceId     String   
   notes          Note[]   // One highlight can be used in multiple notes
@@ -937,9 +937,9 @@ model Notification {
   updatedAt     DateTime  @updatedAt
   targetedAudience  AccessLevel @default(PUBLIC)
   authorId      String    @db.ObjectId
-  author        User      @relation(fields: [authorId], references: [id])
+  author        User      @relation(fields: [authorId], references: [id], onDelete:Cascade)
   courseId      String?    @db.ObjectId
-  course        UserCourse?   @relation(fields: [courseId], references: [id])
+  course        UserCourse?   @relation(fields: [courseId], references: [id], onDelete:Cascade)
   
   // Tracking
   viewedBy      NotificationView[]
@@ -949,9 +949,9 @@ model Notification {
 model NotificationView {
   id             String      @id @default(auto()) @map("_id") @db.ObjectId
   notificationId String      @db.ObjectId
-  notification   Notification @relation(fields: [notificationId], references: [id])
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete:Cascade)
   userId      String      @db.ObjectId
-  user        User        @relation(fields: [userId], references: [id])
+  user        User        @relation(fields: [userId], references: [id], onDelete:Cascade)
   viewedAt       DateTime    @default(now())
 }
 
