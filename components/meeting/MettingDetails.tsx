@@ -382,9 +382,9 @@ export function MeetingDetails({ meeting, onClose, isMobile = false }: MeetingDe
 
           {/* Invite section with improved styling */}
           <div className="bg-white p-5 shadow-sm border-t border-gray-50">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
               <h4 className="text-sm font-medium text-gray-700 uppercase tracking-wider">Participants</h4>
-              <div className="flex space-x-2">
+              <div className="flex flex-col md:flex-row gap-2 space-x-2">
                 <Button
                   variant="outline"
                   size="sm"

@@ -60,7 +60,6 @@ export function AgendaCreator({
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const [activeUsers, setActiveUsers] = useState<User[]>([])
   const [rtm, setRtm] = useState<RTMClient>()
-  const [channelName, setChannelName] = useState<string>("")
   const [agendaItems, setAgendaItems] = useState<AgendaItemType[]>([])
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false)
   const [totalTime, setTotalTime] = useState(0)
@@ -97,9 +96,8 @@ export function AgendaCreator({
       try {
 
         // setConnectionStatus("connecting")
-        const { rtm, channelName } = await initializeAgoraRTM(meeting.id, user)
-        setChannelName(channelName)
-        // if(rtm){
+        const { rtm } = await initializeAgoraRTM(meeting.id, user)
+              // if(rtm){
         //   setConnectionStatus("connected")
         // }
         setRtm(rtm)
@@ -116,7 +114,7 @@ export function AgendaCreator({
         (async()=>{
     
           if(!user) return
-          await publishMessage(rtm, channelName, {
+          await publishMessage(rtm, meeting.id, {
             type: "user_join",
             userId: user.id,
             user,
@@ -293,7 +291,7 @@ export function AgendaCreator({
     }
 
     setAgendaItems([...agendaItems, newItem])
-    await publishMessage(rtm, channelName, {
+    await publishMessage(rtm, meeting.id, {
       type: "request_agendaItems",
       userId: user.id,
       user,
@@ -311,7 +309,7 @@ export function AgendaCreator({
   // Delete agenda item
   async function deleteAgendaItem(id: string) {
     setAgendaItems(agendaItems.filter((item) => item.id !== id))
-    await publishMessage(rtm, channelName, {
+    await publishMessage(rtm, meeting.id, {
       type: "user_join",
       userId: user.id,
       user,
@@ -330,7 +328,7 @@ export function AgendaCreator({
       <div className="lg:col-span-2">
         <Card className="shadow-md border-0 overflow-hidden">
           <CardHeader className="bg-white border-b border-gray-100 pb-4">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col md:flex-row  gap-2 justify-between items-center">
               <div>
                 <CardTitle className="text-xl font-semibold text-gray-800">
                   {meeting.topic}

@@ -527,6 +527,7 @@ export function LessonNavbar({
             </div>
           </motion.div>
         )}
+        <p className="md:hidden my-2 text-[red]">Use PC if you want to edit the lesson</p>
       </AnimatePresence>
     </nav>
   )
