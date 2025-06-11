@@ -66,6 +66,15 @@ export default function SignupPage() {
     )
   }
 
+  const signWithGoogle = async () => {
+      try {
+        await loginWithGoogle()
+        window.location.reload()
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 overflow-hidden flex items-center justify-center">
       {/* Animated Background */}
@@ -94,7 +103,7 @@ export default function SignupPage() {
 
         <div className="space-y-6">
           <button
-            onClick={loginWithGoogle}
+            onClick={signWithGoogle}
             className="w-full relative overflow-hidden group rounded-full bg-white hover:bg-gray-50 text-gray-900 px-4 py-2 leading-none flex items-center justify-center gap-2 transition-colors border border-gray-300 shadow-sm"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
