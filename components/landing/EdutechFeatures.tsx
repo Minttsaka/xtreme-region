@@ -19,7 +19,7 @@ type Lesson = Prisma.LessonGetPayload<{
   }
 }>
 
-export default function EducationFeatures({lesson}:{lesson:Lesson}) {
+export default function EducationFeatures({ lesson }:{ lesson:Lesson }) {
   return (
     <div className="flex  flex-col ">
       <main className="flex-1">
@@ -67,7 +67,7 @@ export default function EducationFeatures({lesson}:{lesson:Lesson}) {
                 
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 rounded-2xl blur-3xl" />
                 <div className="relative bg-card rounded-2xl border p-6 shadow-2xl">
-                  <DemoLessonDialog lesson={lesson}/>
+                  {lesson && <DemoLessonDialog lesson={lesson}/> }
                   <div className="space-y-4">
                     <img
                       src="/img/demo-img.png"

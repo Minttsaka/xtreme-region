@@ -34,7 +34,7 @@ export default  async function Home() {
         }
       })
 
-    const randomLesson = lessons[Math.floor(Math.random() * lessons.length)];
+    const randomLesson = lessons.length > 0 ? lessons[Math.floor(Math.random() * lessons.length)] : null
 
   return (
     <main 

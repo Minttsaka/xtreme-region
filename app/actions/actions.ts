@@ -210,6 +210,7 @@ export const saveNewLesson = async (course:NewLesson, courseId:string) => {
         id:courseId
       }
     })
+    
     const newLesson = await prisma.lesson.create({
       data: {
         ...refinedCourse,
