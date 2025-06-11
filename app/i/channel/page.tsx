@@ -10,13 +10,22 @@ export default async function page() {
 
   const session = await auth()
   
-  const user = session?.user
+  const sessionUser = session?.user
+
+  const user = await prisma.user.findUnique({
+    where:{
+      email:sessionUser.email as string
+    },
+    include:{
+      channels:true
+    }
+  })
 
   if(!user){
     return
   }
 
-  const [educationLevels, channel, userWithChannel, featuredChannels ] = await prisma.$transaction([
+  const [educationLevels, channel, featuredChannels ] = await prisma.$transaction([
 
     prisma.educationLevel.findMany({
       include:{
@@ -34,15 +43,6 @@ export default async function page() {
       }
     }),
 
-    prisma.user.findUnique({
-    where:{
-      email:user?.email as string
-    },
-    include:{
-      channels:true
-    }
-  }),
-
   prisma.channel.findMany({
     where:{
       isFeatured:true
@@ -54,17 +54,14 @@ export default async function page() {
   })
   ])
 
-  if(!userWithChannel){
-    return
-  }
 
 
   return (
     <div className='min-h-screen bg-gray-50'>
       {featuredChannels.length > 0 && <ChannelCarousel channels={featuredChannels} />}
       <TeacherChannelManagement />
-      <ChannelManagement user={userWithChannel} />
-     {userWithChannel.channels.length > 0 &&
+      <ChannelManagement user={user} />
+     {user.channels.length > 0 &&
       <EducationLevelSelector educationLevels ={ educationLevels} channel={channel?.id as string} />
       }
     </div>

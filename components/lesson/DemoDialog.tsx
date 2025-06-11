@@ -31,7 +31,7 @@ type Lesson = Prisma.LessonGetPayload<{
   }
 }>
 
-export default function DemoLessonDialog({lesson}:{lesson:Lesson}) {
+export default function DemoLessonDialog({ lesson }:{ lesson:Lesson }) {
  
 
   return (
