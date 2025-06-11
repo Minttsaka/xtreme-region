@@ -50,6 +50,7 @@ const AdorableLessonManager: React.FC <{
         <SubjectList
           setCoursesList={setCoursesList}
           channel={channel}
+          user={user}
           setLoading={setLoading}
           subjects={subjects}
           onSelectSubject={handleSelectSubject}
@@ -77,7 +78,7 @@ const AdorableLessonManager: React.FC <{
           transition={{ duration: 0.5, delay: 0.4 }}
           className="mt-4 md:mt-0 md:ml-4 flex-1"
         >
-          <Card className="h-full bg-gradient-to-br from-indigo-100 to-blue-100">
+          <Card className="h-full px-0 bg-gradient-to-br from-indigo-100 to-blue-100">
             <CardHeader>
               <CardTitle className="text-lg font-bold text-indigo-800">{selectedCourse.title}</CardTitle>
             </CardHeader>

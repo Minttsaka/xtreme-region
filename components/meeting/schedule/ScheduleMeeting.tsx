@@ -391,7 +391,7 @@ export default function ScheduleMeeting() {
                   'hidden':currentStep !== 1
                 })}
               >
-                <div className="mb-2">
+                <div className="mb-2 space-y-2">
                   <Label htmlFor="description">description</Label>
                   <Textarea
                     id="description"

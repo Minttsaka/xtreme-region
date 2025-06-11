@@ -114,7 +114,7 @@ export default function MobileSideBar(
                 </motion.div>
                 </div>
 
-                <ScrollArea className="flex-1 w-full px-2">
+                <ScrollArea className="flex-1 w-full overflow-y-auto h-full px-2">
                 <div className="flex flex-col space-y-4">
                     {/* Main Menu Items */}
                     <div className="flex flex-col items-center text-white space-y-2">
@@ -323,7 +323,7 @@ export default function MobileSideBar(
                             {recommendedChannels.map((channel) => (
                             <Link
                                 key={channel.id}
-                                href={`/channel/${channel.id}`}
+                                href={`/channels/${channel.id}`}
                                 className="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 transition-colors duration-200 group"
                             >
                                 <img

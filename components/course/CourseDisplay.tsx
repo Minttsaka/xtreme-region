@@ -107,13 +107,13 @@ export default function CourseDisplay({ course , user }:{ course:CourseList , us
       icon: Globe,
       color: "from-green-500 to-emerald-400",
     },
-    {
-      value: "ENROLLED_ONLY",
-      label: "Premium",
-      description: "Paid access only - set your price below",
-      icon: CreditCard,
-      color: "from-purple-600 to-pink-500",
-    },
+    // {
+    //   value: "ENROLLED_ONLY",
+    //   label: "Premium",
+    //   description: "Paid access only - set your price below",
+    //   icon: CreditCard,
+    //   color: "from-purple-600 to-pink-500",
+    // },
   ]
 
    const fileInputRef = useRef<HTMLInputElement>(null);
@@ -215,7 +215,7 @@ export default function CourseDisplay({ course , user }:{ course:CourseList , us
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      <div className="container mx-auto md:py-8 md:px-4">
+      <div className="md:container mx-auto md:py-8 md:px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -241,7 +241,7 @@ export default function CourseDisplay({ course , user }:{ course:CourseList , us
                   {/* Author Info */}
                   <div className="flex items-center gap-2">
                     <Avatar className="w-8 h-8 sm:w-10 sm:h-10">
-                      <AvatarImage src={'#'} />
+                      <AvatarImage src={user.image}  />
                       <AvatarFallback className="text-xs sm:text-sm">SW</AvatarFallback>
                     </Avatar>
                     <div>

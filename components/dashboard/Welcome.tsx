@@ -55,7 +55,7 @@ export default function WelcomeNewSignup({ user }:{ user:User }) {
               <div className="pt-8">
                 <Link href="/i/meeting">
                 <CustomButton className="bg-black">
-                  EXPLORE MORE
+                  Explore More
                   </CustomButton>
                 </Link>
               </div>
@@ -83,7 +83,7 @@ export default function WelcomeNewSignup({ user }:{ user:User }) {
           {/* Card 2 - Breakthrough Research */}
           <div className="bg-black text-white p-12 rounded-3xl relative overflow-hidden">
             <div className="max-w-md space-y-4 relative z-10">
-              <h2 className="text-2xl md:text-6xl lg:text-7x font-light leading-tight">CONDUCT SURVEY</h2>
+              <h2 className="text-2xl md:text-6xl lg:text-7x font-light leading-tight">Conduct Survey</h2>
               <p className="text-gray-400">
                Gather valuable insights with AI-Powered surveys and advanced analysis.
               </p>
@@ -124,7 +124,7 @@ export default function WelcomeNewSignup({ user }:{ user:User }) {
                   href="/i/channel"
                 >
                   <CustomButton className="bg-purple-900">
-                    MANAGE CHANNELS
+                    Manage Channel
                   </CustomButton>
                 </Link>
               </div>
@@ -162,7 +162,7 @@ export default function WelcomeNewSignup({ user }:{ user:User }) {
                   href="/i/institution"
                 >
                   <CustomButton className="bg-green-500">
-                  INSTITUTION PORTAL
+                  Institutional Portal
                   </CustomButton>
                 </Link>
               </div>

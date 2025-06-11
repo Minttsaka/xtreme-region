@@ -268,7 +268,7 @@ export default function SupportChat() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed bottom-24 right-6 z-40 w-full sm:w-[400px] md:w-[450px] bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100"
+            className="fixed bottom-24 right-6 z-40 w-full sm:w-[250px] md:w-[450px] bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100"
             initial={{ y: 20, opacity: 0, height: "auto" }}
             animate={{ y: 0, opacity: 1, height: "auto" }}
             exit={{ y: 20, opacity: 0, height: 0 }}

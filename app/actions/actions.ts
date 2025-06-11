@@ -370,6 +370,11 @@ export async function addCourseToUser(data: AddCourseParams) {
             id:course?.id
           }
         },
+        user:{
+          connect:{
+            id:user.id
+          }
+        },
         subjectToClass:{
           connect:{
             id:existingsubject?.id
@@ -424,6 +429,8 @@ export const fetchCourses = async (id: string) => {
     return
   }
 
+  const user = await getUser()
+
   const existingsubject = await prisma.subjectToClass.findUnique({
     where: {
       id
@@ -439,7 +446,8 @@ export const fetchCourses = async (id: string) => {
    
     const courses = await prisma.userCourse.findMany({
       where: {
-          subjectToClassId: existingsubject.id, 
+          subjectToClassId: existingsubject.id,
+          userId: user.id
       },
       include: {
         review:{

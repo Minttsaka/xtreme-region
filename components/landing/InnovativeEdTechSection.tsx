@@ -63,9 +63,9 @@ export function TimelineDemo() {
             Lorem ipsum is for people who are too lazy to write copy. But we are
             not. Here are some more example of beautiful designs I built.
           </p> */}
-           <div className="gap-4 aspect-video">
+           <div className="gap-4 aspect-video max-h">
             <img
-              src="https://marketplace.canva.com/EADaoY5SjD4/2/0/1131w/canva-blue-and-gray-simple-homeschool-report-card-4uvvsQU-140.jpg"
+              src="https://images.template.net/wp-content/uploads/2020/02/34-Report-Card-Templates-Word-Docs-PDF-Pages.jpg"
               alt="startup template"
               className="rounded-lg object-cover  shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
             />

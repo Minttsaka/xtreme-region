@@ -310,7 +310,7 @@ const AdorableEdTechSidebar: React.FC<{
                     {recommendedChannels.map((channel) => (
                       <Link
                         key={channel.id}
-                        href={`/channel/${channel.id}`}
+                        href={`/channels/${channel.id}`}
                         className="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 transition-colors duration-200 group"
                       >
                         <img

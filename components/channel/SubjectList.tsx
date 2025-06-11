@@ -10,9 +10,11 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { addCourseToUser, fetchCourses } from '@/app/actions/actions'
 import { CourseList } from '@/types/course'
 import { Subject } from '@/types/subject'
+import { CourseUser } from '@/types/channel'
 
 interface SubjectListProps {
   subjects: Subject[]
+  user:CourseUser
   channel:string
   setLoading:Dispatch<SetStateAction<boolean>>
   setCoursesList:Dispatch<SetStateAction<CourseList[]>>
@@ -49,6 +51,7 @@ const SubjectList: React.FC<SubjectListProps> = ({
   subjects, 
   onSelectSubject,
   channel, 
+  user,
   selectedSubjectId,
   setCoursesList,
   setLoading
@@ -153,7 +156,16 @@ const SubjectList: React.FC<SubjectListProps> = ({
                           >
                             <span className="">{course.title}</span>
                             {isLoading ? <Loader2 className='animate-spin' /> :
-                            course.userCourse.length === 0 ? <Button 
+                            course.userCourse.find(userCourse => userCourse.user.id === user.id) ? <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="h-6 w-6 rounded-full text-white bg-green-400"
+                                title="Add to my courses"
+                              >
+                                <Check className="h-4 w-4" />
+                              </Button> 
+                              : 
+                              <Button 
                               variant="ghost" 
                               size="icon" 
                               className="h-6 w-6 text-purple-700 hover:text-purple-900 hover:bg-purple-100"
@@ -161,15 +173,8 @@ const SubjectList: React.FC<SubjectListProps> = ({
                               title="Add to my courses"
                             >
                               <Plus className="h-4 w-4" />
-                            </Button>: 
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                className="h-6 w-6 rounded-full text-white bg-green-400"
-                                title="Add to my courses"
-                              >
-                                <Check className="h-4 w-4" />
-                              </Button>
+                            </Button>
+                             
                             }
                           </motion.div>
                         ))

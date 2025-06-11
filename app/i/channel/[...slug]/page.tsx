@@ -21,7 +21,15 @@ export default async function page(
       include:{
         courses:{
           include:{
-            userCourse:true
+            userCourse:{
+              include:{
+                user:{
+                  select:{
+                    id:true
+                  }
+                }
+              }
+            }
           }
         },
         subject:{

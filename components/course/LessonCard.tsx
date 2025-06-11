@@ -82,7 +82,7 @@ export function LessonCard({ lesson }: {lesson:Lesson}) {
 
   <CardFooter className="relative z-10 pt-0 block">
     <LessonScheduler lesson={lesson} />
-    <Link href={`/i/editor/${lesson.id}`} className="w-full">
+    <Link href={`/i/editor/${lesson.id}`} className="w-full hidden md:block">
       <Button 
         variant="ghost" 
         className="w-full group/button bg-gradient-to-r from-sky-50 to-indigo-50 hover:from-sky-100 hover:to-indigo-100 text-slate-700 border border-white/60 rounded-xl h-11"
@@ -93,6 +93,9 @@ export function LessonCard({ lesson }: {lesson:Lesson}) {
         </div>
       </Button>
     </Link>
+    <p className="md:hidden my-2">
+      Use computer to edit
+    </p>
   </CardFooter>
   
   {/* Futuristic progress indicator */}

@@ -19,21 +19,13 @@ import Link from "next/link"
 export function SigninForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [ isPending] = useActionState(authenticate, undefined)
-
-  const [error, setError] = useState<string | null>(null)
   // const searchParams = useSearchParams()
   // const callbackUrl = searchParams.get("callbackUrl")
 
-  useEffect(() => {
-    if (error) {
-      toast(error)
-      setError(null) // Reset error after showing toast
-    }
-  }, [error])
+
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setError(null)
 
     const formData = new FormData(e.currentTarget)
     const email = formData.get("email") as string
@@ -48,8 +40,7 @@ export function SigninForm() {
         })
 
         if (!result?.ok) {
-        toast(result?.error)
-        setError(result.error as string)
+        toast.error(result?.error)
         return;
       }
 
@@ -69,9 +60,18 @@ export function SigninForm() {
       console.error(error)
      
       if (error instanceof Error && error.message.includes("Invalid credentials")) {
-        setError(error.message)
+        toast.error(error.message)
       }
 
+    }
+  }
+
+  const signWithGoogle = async () => {
+    try {
+      await loginWithGoogle()
+      window.location.reload()
+    } catch (error) {
+      console.error(error)
     }
   }
 
@@ -199,7 +199,7 @@ export function SigninForm() {
                 </div>
 
                 <button
-                  onClick={loginWithGoogle}
+                  onClick={signWithGoogle}
                   className="mt-6 w-full relative overflow-hidden group rounded-full bg-white hover:bg-gray-50 text-gray-900 px-7 py-2 leading-none flex items-center justify-center gap-2 transition-colors border border-gray-300 shadow-sm"
                 >
                   <svg className="h-5 w-5" viewBox="0 0 24 24">

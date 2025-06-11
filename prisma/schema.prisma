@@ -33,6 +33,7 @@ model User {
   subscriptions Subscription[]
   accounts      Account[] 
   sessions      Session[]
+  courses       UserCourse[]
   notifications Notification[]
   collaborations Collaborators[]
   channels      Channel[]
@@ -632,6 +633,8 @@ model UserCourse {
   payment  Payment[]
   views      View[]
   likes      Like[]
+  userId      String
+  user      User  @relation(fields: [userId], references: [id])
   approvalStatus      LessonApproval @default(PENDING)
   review     Review[]
   collaborations Collaborators[]

@@ -4,7 +4,15 @@ export type Subject = Prisma.SubjectToClassGetPayload<{
    include:{
         courses:{
           include:{
-            userCourse:true
+            userCourse:{
+              include:{
+                user:{
+                  select:{
+                    id:true
+                  }
+                }
+              }
+            }
           }
         },
         subject:{
