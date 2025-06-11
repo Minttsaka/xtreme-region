@@ -19,6 +19,8 @@ import { LoadingState } from "./LoadingState"
 import { useRouter } from "next/navigation"
 import { Upload } from "lucide-react"
 import { uploadFileTos3 } from "@/lib/aws"
+import { toast } from "sonner"
+import { convertTo24HourFormat } from "@/lib/meeting"
 
 type Files = {
   type:string,
@@ -29,7 +31,9 @@ export type SchedulerInput = {
     topic: string
     date: Date
     time: string
-    duration: string
+    startTime:Date
+    duration: number
+    endDate: Date
     timeZone: string
     description: string
     agenda: boolean
@@ -112,8 +116,6 @@ export default function ScheduleMeeting() {
     setSelectedTime({ time: `${convertedHour}:${minute.toString().padStart(2, "0")}`, ampm, rawTime: event.target.value });
   };
 
-
-
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files)
@@ -139,11 +141,28 @@ export default function ScheduleMeeting() {
         uploadedFiles.push(formattedData);
       }
 
+      const duration = Number.parseInt(formData.get('duration') as string, 10)
+
+      if (isNaN(duration)) {
+        toast.error("Invalid Duration")
+        return 
+      }
+
+    const extractedDate = new Date(date).toISOString().split("T")[0];
+
+// Convert time before creating a Date
+    const convertedTime = convertTo24HourFormat(`${selectedTime.time} ${selectedTime.ampm}`);
+    const startDateTime = new Date(`${extractedDate}T${convertedTime}:00`);
+    const endDateTime = new Date(startDateTime.getTime() + duration * 60000);
+      
+
       const input: SchedulerInput = {
         topic: formData.get('topic') as string,
         date: date as Date,
         time: `${selectedTime.time} ${selectedTime.ampm}`,
-        duration: formData.get('duration') as string,
+        duration,
+        startTime:startDateTime,
+        endDate:endDateTime,
         timeZone: formData.get('timeZone') as string,
         description: formData.get('description') as string,
         agenda: formData.get('agenda') === 'on',
@@ -246,7 +265,8 @@ export default function ScheduleMeeting() {
                       )}
                       aria-hidden="true"
                     />
-                  ) : null}
+                  ) : null
+                  }
                 </li>
               ))}
             </ol>
@@ -371,7 +391,7 @@ export default function ScheduleMeeting() {
                   'hidden':currentStep !== 1
                 })}
               >
-                <div>
+                <div className="mb-2">
                   <Label htmlFor="description">description</Label>
                   <Textarea
                     id="description"
@@ -388,20 +408,20 @@ export default function ScheduleMeeting() {
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <Switch id="transcription" name="transcription" />
+                  <Switch disabled id="transcription" name="transcription" />
                   <Label htmlFor="waitingRoom">Enable transcription</Label>
                 </div>
               </motion.div>
     
-              <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.3 }}
-      className={cn("space-y-4", {
-        hidden: currentStep !== 2,
-      })}
-    >
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        transition={{ duration: 0.3 }}
+        className={cn("space-y-4", {
+          hidden: currentStep !== 2,
+        })}
+      >
       <div>
         <Label htmlFor="fileUpload">Upload Files</Label>
         <div className="relative">
@@ -486,7 +506,7 @@ export default function ScheduleMeeting() {
                 Previous
               </Button>
               {currentStep < steps.length - 1 && (
-                <Button className="rounded-3xl bg-green-500" type="button" onClick={nextStep}>
+                <Button disabled={isLoading} className="rounded-3xl bg-green-500" type="button" onClick={nextStep}>
                   Next
                   <ChevronRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -495,7 +515,7 @@ export default function ScheduleMeeting() {
               {steps[currentStep].id === 'settings' && 
                <Button disabled={isLoading} className="rounded-3xl bg-green-500" type="submit">
                 
-                {isLoading ? <Dot className='animate-fade-in text-green-500' /> : 'Schedule Meeting'}
+                {isLoading ? <Dot className='animate-spin text-green-500' /> : 'Schedule Meeting'}
                 <Clock className="w-4 h-4 ml-2" />
              </Button>
              }

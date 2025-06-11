@@ -441,9 +441,20 @@ export default function NavBar() {
                 <span className="after:content-[''] after:inline-block absolute inset-0 after:inset-0 after:absolute select-none pointer-events-none after:rounded-[11px] rounded-[11px] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)] after:shadow-[inset_0_0_0_1px_rgba(0,139,255,0.2)]"></span>
               </a>
             </div>
-            <Button className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:from-cyan-600 hover:to-blue-600">
-              Sign Up
-            </Button>
+            <div className="flex items-center gap-x-3 xs:gap-x-6">
+              <Link
+                className="relative focus-visible:outline outline-[rgba(0,0,0,0.64)] rounded-xl outline-offset-[3px] inline-block"
+                href="/i/dashboard"
+              >
+                <div className="text-gray-800 font-sm justify-center flex flex-nowrap whitespace-nowrap transition-translate duration-300 cursor-pointer group items-center h-full group leading-[150%] text-sm px-[30px] py-2">
+                  Get Started{" "}
+                  <span className="inline-block ml-1 text-gray-800 font-normal duration-300 w-fit transition-translate group-hover:translate-x-1 font-unicode">
+                    →
+                  </span>
+                </div>
+                <span className="after:content-[''] after:inline-block absolute inset-0 after:inset-0 after:absolute select-none pointer-events-none after:rounded-[11px] rounded-[11px] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)] after:shadow-[inset_0_0_0_1px_rgba(0,139,255,0.2)]"></span>
+              </Link>
+            </div>
           </div>
         </motion.div>
       )}

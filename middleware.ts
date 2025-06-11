@@ -7,7 +7,7 @@ const publicRoutes = ["/signin", "/signup", "/"];
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001', 
-  'http://localhost:3002',
+  'https://conference-seven-swart.vercel.app',
 ];
 
 export default async function middleware(request: NextRequest) {
@@ -25,7 +25,7 @@ export default async function middleware(request: NextRequest) {
     // Only check origin for non-GET requests to avoid blocking navigation
     if (origin && request.method !== 'GET' && !allowedOrigins.includes(origin)) {
       // Add environment URL if it exists
-      const envUrl = process.env.NEXT_PUBLIC_APP_URL;
+      const envUrl = process.env.NEXT_PUBLIC_AUTH_URL;
       if (envUrl && !allowedOrigins.includes(envUrl)) {
         allowedOrigins.push(envUrl);
       }

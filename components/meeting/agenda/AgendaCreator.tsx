@@ -60,7 +60,6 @@ export function AgendaCreator({
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const [activeUsers, setActiveUsers] = useState<User[]>([])
   const [rtm, setRtm] = useState<RTMClient>()
-  const [toastMessage, setToastMessage] = useState<string>('')
   const [channelName, setChannelName] = useState<string>("")
   const [agendaItems, setAgendaItems] = useState<AgendaItemType[]>([])
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false)
@@ -127,12 +126,6 @@ export function AgendaCreator({
         
       },[user])
 
-      useEffect(()=>{
-          if(toastMessage !== ""){
-            toast(toastMessage)
-        }
-        },[toastMessage])
-
         // const handlePresence = (event: PresenceEvent) => {
         //   // switch (event.eventType) {
         //   //   case "REMOTE_JOIN":
@@ -168,13 +161,14 @@ export function AgendaCreator({
           }
 
           if (message.type === "agendaItems_move") {
-            setToastMessage(message.message);
+    
+            toast(message.message)
 
           } else if (message.type === "delete_agendaItem") {
-            setToastMessage(message.message);
+           toast(message.message)
 
           } else if (message.type === "user_join") {
-            setToastMessage(message.message);
+           toast(message.message)
             setActiveUsers(prev => [...prev, message.user]);
 
           } else if (message.type === "request_agendaItems") {
@@ -235,12 +229,10 @@ export function AgendaCreator({
               throw new Error(data.error || "Failed to save meeting")
             }
  
-            setToastMessage("successfully saved")
             toast("Your meeting agenda has been saved successfully.")
 
           } catch (error) {
             console.error("Error saving meeting:", error)
-            setToastMessage("error")
             toast("An unknown error occurred")
           } finally {
             setIsSaving(false)

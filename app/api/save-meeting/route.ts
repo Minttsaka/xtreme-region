@@ -4,19 +4,6 @@ import { getUser } from "@/lib/user"
 import type { SchedulerInput } from "@/components/meeting/schedule/ScheduleMeeting"
 import { type NextRequest, NextResponse } from "next/server"
 
-const convertTo24HourFormat = (time12h: string) => {
-  const [time, modifier] = time12h.split(" ");
-  let [hours, minutes] = time.split(":").map(Number);
-
-  if (modifier === "PM" && hours !== 12) {
-    hours += 12;
-  } else if (modifier === "AM" && hours === 12) {
-    hours = 0;
-  }
-
-  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-};
-
 export async function POST(request: NextRequest) {
   try {
     const user = await getUser()
@@ -33,8 +20,10 @@ export async function POST(request: NextRequest) {
       topic: formData.topic,
       date: formData.date, // This will be a string when received from JSON
       time: formData.time,
+      startTime:formData.startTime,
       files: formData.files || [],
       duration: formData.duration,
+      endDate:formData.endDate,
       timeZone: formData.timeZone,
       description: formData.description,
       agenda: formData.agenda === "on" || formData.agenda === true,
@@ -48,26 +37,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 })
     }
 
-    // Parse duration to number
-    const duration = Number.parseInt(input.duration, 10)
-    if (isNaN(duration)) {
-      return NextResponse.json({ message: "Invalid duration" }, { status: 400 })
-    }
 
-    const extractedDate = new Date(input.date).toISOString().split("T")[0];
-
-// Convert time before creating a Date
-    const convertedTime = convertTo24HourFormat(input.time);
-    const startDateTime = new Date(`${extractedDate}T${convertedTime}:00`);
-    const endDateTime = new Date(startDateTime.getTime() + duration * 60000);
  
     // Create the meeting
     const meeting = await prisma.meeting.create({
       data: {
         topic: input.topic,
-        startTime:startDateTime,
-        duration,
-        endDate:endDateTime,
+        startTime:input.startTime,
+        duration:input.duration,
+        endDate:input.endDate,
         startDate:input.date,
         timeZone: input.timeZone,
         description: input.description || "",

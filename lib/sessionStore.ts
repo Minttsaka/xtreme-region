@@ -59,6 +59,7 @@ export async function createSession(userData: { id: string; name: string; email:
     expires: new Date(expiresAt),
     sameSite: "lax",
     path: "/",
+    domain:".xtremeregion.com"
     // Important: set domain to a common parent domain if apps are on subdomains
     // domain: '.yourdomain.com', // This allows sharing between app.yourdomain.com and meet.yourdomain.com
   })

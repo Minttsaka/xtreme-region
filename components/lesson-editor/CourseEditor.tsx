@@ -8,6 +8,7 @@ import type { Prisma, User } from "@prisma/client"
 import { initializeAgoraRTM } from "@/lib/initAgoraClient"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 
 type Lesson = Prisma.LessonGetPayload<{
   include: {
@@ -395,12 +396,28 @@ export default function CourseEditor({ lesson, user }: {
               "border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700",
             )}
           >
-            <div className="h-full p-2 lg:p-4 overflow-auto">
-              {/* PDF Viewer Component */}
-              <div className="h-full bg-gray-50 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-                <PDFViewer file={pdfFile} onHighlight={handleHighlight} highlights={highlights} />
-              </div>
-            </div>
+            <Tabs defaultValue="read">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="read">Read View</TabsTrigger>
+                <TabsTrigger value="editor">Editor View</TabsTrigger>
+              </TabsList>
+      
+              <TabsContent value="read" className="h-full p-2 lg:p-4 overflow-auto">
+                <div className="h-full w-full">
+                    <iframe
+                      src={`${pdfFile}#toolbar=0&navpanes=0`}
+                      className="w-full h-full border-0"
+                      title={pdfFile}
+                    />
+                  </div>
+              </TabsContent>
+      
+              <TabsContent value="editor" className="h-full p-2 lg:p-4 overflow-auto">
+                  <div className="h-full bg-gray-50 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                  <PDFViewer file={pdfFile} onHighlight={handleHighlight} highlights={highlights} />
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         )}
 

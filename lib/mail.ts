@@ -16,14 +16,13 @@ export async function  sendMail({
   const { SMPT_EMAIL } = process.env;
   
   const transport = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
+    service: "gmail",
     auth: {
-      user: process.env.MAILTRAP_USER,
-      pass: process.env.MAILTRAP_PASSWORD,
-    },
-    secure: false
-  })
+        user: process.env.GOOGLE_MAIL_USER,      // Your Gmail address
+        pass: process.env.GOOGLE_MAIL_PASS  // Your Gmail password or App Password
+    }
+  }
+)
 
   try {
     await transport.verify();

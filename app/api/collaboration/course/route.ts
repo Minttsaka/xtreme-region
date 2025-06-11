@@ -17,14 +17,13 @@ AWS.config.update({
 })
 
 const transporter = nodemailer.createTransport({
-  host: "sandbox.smtp.mailtrap.io",
-  port: 2525,
-  auth: {
-    user: process.env.MAILTRAP_USER,
-    pass: process.env.MAILTRAP_PASSWORD,
-  },
-  secure: false
-})
+    service: "gmail",
+    auth: {
+        user: process.env.GOOGLE_MAIL_USER,      // Your Gmail address
+        pass: process.env.GOOGLE_MAIL_PASS  // Your Gmail password or App Password
+    }
+  }
+)
 
 // Load email template
 let compiledTemplate: Handlebars.TemplateDelegate

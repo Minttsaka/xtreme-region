@@ -31,9 +31,9 @@ export default function ScrollableFeatures() {
 
             {/* Hero Text */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7x font-light leading-tight">
-              Intelligent Video Meetings
+              Video Meetings
               <br />
-              with AI-Powered Collaboration.
+              with AI-Powered Tools.
             </h1>
 
             {/* Statistics Card */}
@@ -82,7 +82,7 @@ export default function ScrollableFeatures() {
             {/* Video Chat Preview */}
             <div className="relative">
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/original-1c6785b9c6f8d99e9acfc4b9159d611b-xrM5mY7Mb7GUjUAslKXmXzkFGUQROu.webp"
+                src="https://www.reviews.org/app/uploads/2020/05/Woman-on-a-video-conference-call-1.jpg"
                 alt="Video Chat"
                 width={500}
                 height={400}

@@ -16,15 +16,27 @@ AWS.config.update({
   region: 'us-east-1',
 })
 
-const transporter = nodemailer.createTransport({
-  host: "sandbox.smtp.mailtrap.io",
-  port: 2525,
-  auth: {
-    user: process.env.MAILTRAP_USER,
-    pass: process.env.MAILTRAP_PASSWORD,
-  },
-  secure: false
-})
+// {
+//   host: "sandbox.smtp.mailtrap.io",
+//   port: 2525,
+//   auth: {
+//     user: process.env.MAILTRAP_USER,
+//     pass: process.env.MAILTRAP_PASSWORD,
+//   },
+//   secure: false
+// }
+
+const transporter = nodemailer.createTransport(
+  {
+    service: "gmail",
+    auth: {
+        user: process.env.GOOGLE_MAIL_USER,      // Your Gmail address
+        pass: process.env.GOOGLE_MAIL_PASS  // Your Gmail password or App Password
+    }
+  }
+
+)
+
 
 // Read the email template
 let compiledTemplate: Handlebars.TemplateDelegate
