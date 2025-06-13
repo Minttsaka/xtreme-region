@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 export const metadata: Metadata = {
   title: "Xtreme region",
   description: "Welcome",
-  icons:'https://dct4life-files.s3.af-south-1.amazonaws.com/uploads/icon.png'
+  icons:'/fusion.png'
 };
 
 export default async function RootLayout({
@@ -33,19 +33,28 @@ export default async function RootLayout({
    
 
   const [ subscriptions, recommendedChannels, subscriptionsOfCourses ] = await prisma.$transaction([
-    prisma.channel.findMany({
+    prisma.subscription.findMany({
       where: {
         userId: user?.id,
+        channelId:{
+          not:null
+        }
       },
-      include: {
-        _count: {
-          select: {
-            subscriptions: true,
-          },
+      include:{
+        channel:{
+        include: {
+          _count: {
+            select: {
+              subscriptions: true,
+            },
+          }
         }
         
       },
+      }
+      
     }),
+
     prisma.channel.findMany({
       where: {
         userId: {

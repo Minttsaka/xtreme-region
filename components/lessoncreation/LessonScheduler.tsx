@@ -1,13 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { Calendar, ChevronRight, Clock, Zap } from "lucide-react"
+import { Calendar, ChevronRight, Clock, X, Zap } from "lucide-react"
 import { motion } from "framer-motion"
 import { parse,setHours, setMinutes } from 'date-fns'
 import { Button } from "@/components/ui/button"
 import { Calendar as CalendarComponent } from "@/components/ui/calendar"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -129,6 +130,9 @@ export function LessonScheduler({ lesson }:{ lesson:Lesson }) {
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/20 to-violet-900/20 pointer-events-none" />
 
             <div className="relative z-10">
+              <DialogClose className="absolute right-2 top-2">
+                <X />
+              </DialogClose>
               <DialogHeader className="px-6 pt-6 pb-2">
                 <div className="flex items-center space-x-2">
                   <div className="h-1 w-1 rounded-full bg-indigo-400 animate-pulse" />

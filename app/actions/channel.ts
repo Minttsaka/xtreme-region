@@ -525,6 +525,8 @@ export const subscribeToChannel = async (channelId: string) => {
     },
   })
 
+  console.log("subscribe", subscription)
+
   return subscription
 }
 export const unsubscribeFromChannel = async (channelId: string) => {
@@ -553,6 +555,8 @@ export const unsubscribeFromChannel = async (channelId: string) => {
       channelId: channel.id,
     },
   })
+
+   console.log("unsubscribe", subscription)
  
   
   return subscription

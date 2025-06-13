@@ -30,14 +30,30 @@ import Logo from "./Logo"
 import { Prisma, User } from "@prisma/client"
 import { signOut } from 'next-auth/react'
 
-type Channel = Prisma.ChannelGetPayload<{
-  include: {
-    _count: {
-      select: {
-        subscriptions: true
+type Channel = Prisma.SubscriptionGetPayload<{
+  include:{
+        channel:{
+        include: {
+          _count: {
+            select: {
+              subscriptions: true,
+            },
+          }
+        }
+        
+      },
       }
-    }
-  }
+}>
+
+type Recommended = Prisma.ChannelGetPayload<{
+    include: {
+        _count: {
+            select: {
+            subscriptions: true,
+            },
+        }
+        
+        },
 }>
 
 type Subscription = Prisma.SubscriptionGetPayload<{
@@ -66,7 +82,7 @@ export default function MobileSideBar(
     userData,
   }:{
   subscribedChannels:Channel[], 
-  recommendedChannels:Channel[],
+  recommendedChannels:Recommended[],
   subscriptions: Subscription[] | undefined,
    userData:User
   }
@@ -264,15 +280,15 @@ export default function MobileSideBar(
                         <div className="space-y-1">
                             {displayedChannels.map((channel) => (
                             <Link
-                                key={channel.id}
+                                key={channel.channel.id}
                                 target="__blank"
-                                href={`/channels/${channel.id}`}
+                                href={`/channels/${channel.channel.id}`}
                                 className="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 transition-colors duration-200 group"
                             >
                                 <div className="relative">
                                 <img
-                                    src={channel.thumbnail || "https://img.freepik.com/free-vector/youtube-player-icon-with-flat-design_23-2147837753.jpg"}
-                                    alt={channel.thumbnail as string}
+                                    src={channel.channel.thumbnail || "https://img.freepik.com/free-vector/youtube-player-icon-with-flat-design_23-2147837753.jpg"}
+                                    alt={channel.channel.thumbnail as string}
                                     width={24}
                                     height={24}
                                     className="rounded-full"
@@ -281,11 +297,11 @@ export default function MobileSideBar(
                                 </div>
                                 <div className="flex-1 min-w-0">
                                 <div className="flex items-center space-x-1">
-                                    <p className="text-xs font-medium text-white truncate">{channel.name}</p>
-                                    {channel.isFeatured && <Star className="w-2.5 h-2.5 text-yellow-500 flex-shrink-0" />}
+                                    <p className="text-xs font-medium text-white truncate">{channel.channel.name}</p>
+                                    {channel.channel.isFeatured && <Star className="w-2.5 h-2.5 text-yellow-500 flex-shrink-0" />}
                                 </div>
                                 <div className="flex items-center space-x-1 text-xs text-gray-400">
-                                    <span>{channel._count.subscriptions}</span><Dot className="text-green-500" /> Subscribed
+                                    <span>{channel.channel._count.subscriptions}</span><Dot className="text-green-500" /> Subscribed
                                 
                                 </div>
                                 </div>

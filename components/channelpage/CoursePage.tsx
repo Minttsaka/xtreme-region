@@ -204,7 +204,7 @@ function CourseContent({ course }: { course: SingleCourse }) {
 
     setLikes(course._count.likes)
     setViews(course._count.views)
-  },[])
+  },[user])
 
   const completionPercentage = Math.round(((user?.completeArena.length ?? 0) / course.lessons.length) * 100)
 

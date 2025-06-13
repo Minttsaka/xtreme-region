@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Enjoy the lesson",
   description: "Wishing you all the best!",
-  icons:'https://dct4life-files.s3.af-south-1.amazonaws.com/uploads/icon.png'
+  icons:'/fusion.png'
 };
 
 export default function RootLayout({

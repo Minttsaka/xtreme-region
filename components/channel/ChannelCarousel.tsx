@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Prisma } from "@prisma/client"
+import Link from "next/link"
 
 
 
@@ -53,7 +54,7 @@ export default function ChannelCarousel({
             <div
               key={channel.id}
               className={cn(
-                "absolute inset-0 flex items-center justify-between px-4 sm:px-8 transition-all duration-500 ease-in-out",
+                "absolute inset-0 bg-white shadow flex items-center justify-between px-4 sm:px-8 transition-all duration-500 ease-in-out",
                 {
                   "opacity-100 translate-x-0": index === activeIndex,
                   "opacity-0 translate-x-full": index > activeIndex,
@@ -73,7 +74,7 @@ export default function ChannelCarousel({
                 </div>
 
                 <div className="flex flex-col">
-                  <h3 className={cn("font-bold text-sm sm:text-base")}>{channel.name}</h3>
+                  <Link href={`/channels/${channel.id}`} className={cn("font-bold text-sm sm:text-base")}>{channel.name}</Link>
                   <p className={cn("text-xs opacity-80 max-w-xs")}>{channel.description}</p>
                   <div className="mt-1">
                     <span

@@ -81,11 +81,11 @@ export function ChannelsPage({
             className="relative z-10"
           >
             <div className="flex items-center">
-              <div className="relative">
+              {/* <div className="relative">
                 <Hexagon className="h-10 w-10 text-blue-500 absolute -top-1 -left-1 opacity-20" />
                 <Hexagon className="h-10 w-10 text-violet-500 absolute -top-1 -left-1 rotate-30 opacity-30" />
                 <Hexagon className="h-10 w-10 text-indigo-500 relative z-10" />
-              </div>
+              </div> */}
               <h1 className="text-4xl font-light tracking-tight text-slate-800 ml-4">
                 XTREME-REGION{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-500 relative">

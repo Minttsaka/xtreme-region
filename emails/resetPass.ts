@@ -67,10 +67,10 @@ export const resetPasswordTemplate =`
             <p>We received a request to reset your password. Click the button below to reset it:</p>
             <p><a href="{{url}}">Reset Password</a></p>
             <p>If you did not request a password reset, please ignore this email or contact support if you have questions.</p>
-            <p>Thanks,<br>The kuhesmedilab Team</p>
+            <p>Thanks,<br>The xtreme region Team</p>
         </div>
         <div class="footer">
-            <p>&copy; 2024 kuhesmedilab. All rights reserved.</p>
+            <p>&copy; 2025 xtreme region. All rights reserved.</p>
         </div>
     </div>
 </body>

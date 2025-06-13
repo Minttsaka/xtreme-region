@@ -430,7 +430,7 @@ export default function NavBar() {
             <div className="flex items-center gap-x-3 xs:gap-x-6">
               <a
                 className="relative focus-visible:outline outline-[rgba(0,0,0,0.64)] rounded-xl outline-offset-[3px] inline-block"
-                href="/error"
+                href="/?support=true"
               >
                 <div className="font-medium justify-center flex flex-nowrap whitespace-nowrap transition-translate duration-300 cursor-pointer group items-center h-full group leading-[150%] text-sm px-[30px] py-[14px]">
                   Contact support{" "}
@@ -549,7 +549,7 @@ const MobileMenuWithSubmenu = ({ item }: { item: any }) => {
               <div className="mt-6 pt-4 border-t border-gray-100">
                 <div className="flex flex-col space-y-2 text-center">
                   <Link
-                    href="/support"
+                    href="/?support=true"
                     className="text-sm text-blue-600 hover:text-blue-700"
                     onClick={() => setIsExpanded(false)}
                   >

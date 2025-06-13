@@ -76,11 +76,11 @@ function ChannelContent({ channel}: { channel: singleChannel }) {
 
   useEffect(() => {
     fetchUser()
-    const subscribed = channel.subscriptions.find((sub) => sub.userId === user?.id)
-    const likesList = channel.likes.find((like) => like.userId === user?.id)
 
     if (user) {
       handleViews()
+      const subscribed = channel.subscriptions.find((sub) => sub.userId === user?.id)
+      const likesList = channel.likes.find((like) => like.userId === user?.id)
       if (subscribed) {
           setIsSubscribed(true);
         } else {
@@ -95,7 +95,7 @@ function ChannelContent({ channel}: { channel: singleChannel }) {
       setLikes(channel._count.likes)
       setViews(channel._count.views)
     }
-  }, [])
+  }, [user])
 
   const totalRatings = channel._count.rating
   const averageRating =

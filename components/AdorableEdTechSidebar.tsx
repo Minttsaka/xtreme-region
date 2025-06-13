@@ -28,15 +28,32 @@ import Logo from "./Logo"
 import { Prisma, User } from "@prisma/client"
 import { signOut } from "next-auth/react"
 
-type Channel = Prisma.ChannelGetPayload<{
-  include: {
-    _count: {
-      select: {
-        subscriptions: true
+type Channel = Prisma.SubscriptionGetPayload<{
+  include:{
+        channel:{
+        include: {
+          _count: {
+            select: {
+              subscriptions: true,
+            },
+          }
+        }
+        
+      },
       }
-    }
-  }
 }>
+
+type Recommended = Prisma.ChannelGetPayload<{
+    include: {
+        _count: {
+            select: {
+            subscriptions: true,
+            },
+        }
+        
+        },
+}>
+
 
 type Subscription = Prisma.SubscriptionGetPayload<{
   include:{
@@ -59,7 +76,7 @@ const menuItems = [
 
 const AdorableEdTechSidebar: React.FC<{
   subscribedChannels:Channel[], 
-  recommendedChannels:Channel[],
+  recommendedChannels:Recommended[],
   subscriptions: Subscription[] | undefined,
    userData:User
   }> = ({
@@ -248,48 +265,48 @@ const AdorableEdTechSidebar: React.FC<{
                     </Link>
                   </div>
 
-                  <div className="space-y-1">
-                    {displayedChannels.map((channel) => (
+                   <div className="space-y-1">
+                      {displayedChannels.map((channel) => (
                       <Link
-                        key={channel.id}
-                        target="__blank"
-                        href={`/channels/${channel.id}`}
-                        className="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 transition-colors duration-200 group"
+                          key={channel.channel.id}
+                          target="__blank"
+                          href={`/channels/${channel.channel.id}`}
+                          className="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 transition-colors duration-200 group"
                       >
-                        <div className="relative">
+                          <div className="relative">
                           <img
-                            src={channel.thumbnail || "https://img.freepik.com/free-vector/youtube-player-icon-with-flat-design_23-2147837753.jpg"}
-                            alt={channel.thumbnail as string}
-                            width={24}
-                            height={24}
-                            className="rounded-full"
+                              src={channel.channel.thumbnail || "https://img.freepik.com/free-vector/youtube-player-icon-with-flat-design_23-2147837753.jpg"}
+                              alt={channel.channel.thumbnail as string}
+                              width={24}
+                              height={24}
+                              className="rounded-full"
                           />
 
-                        </div>
-                        <div className="flex-1 min-w-0">
+                          </div>
+                          <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-1">
-                            <p className="text-xs font-medium text-white truncate">{channel.name}</p>
-                            {channel.isFeatured && <Star className="w-2.5 h-2.5 text-yellow-500 flex-shrink-0" />}
+                              <p className="text-xs font-medium text-white truncate">{channel.channel.name}</p>
+                              {channel.channel.isFeatured && <Star className="w-2.5 h-2.5 text-yellow-500 flex-shrink-0" />}
                           </div>
                           <div className="flex items-center space-x-1 text-xs text-gray-400">
-                            <span>{channel._count.subscriptions}</span><Dot className="text-green-500" /> Subscribed
-                           
+                              <span>{channel.channel._count.subscriptions}</span><Dot className="text-green-500" /> Subscribed
+                          
                           </div>
-                        </div>
+                          </div>
                       </Link>
-                    ))}
+                      ))}
 
-                    {subscribedChannels.length > 3 && (
+                      {subscribedChannels.length > 3 && (
                       <button
-                        onClick={() => setShowAllChannels(!showAllChannels)}
-                        className="flex items-center space-x-2 w-full p-2 text-xs text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors duration-200"
+                          onClick={() => setShowAllChannels(!showAllChannels)}
+                          className="flex items-center space-x-2 w-full p-2 text-xs text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors duration-200"
                       >
-                        <ChevronDown
+                          <ChevronDown
                           className={`w-3 h-3 transition-transform duration-200 ${showAllChannels ? "rotate-180" : ""}`}
-                        />
-                        <span>{showAllChannels ? "Show Less" : `Show ${subscribedChannels.length - 3} More`}</span>
+                          />
+                          <span>{showAllChannels ? "Show Less" : `Show ${subscribedChannels.length - 3} More`}</span>
                       </button>
-                    )}
+                      )}
                   </div>
                 </motion.div>
               )}
