@@ -20,10 +20,9 @@ export async function GET(
 ) {
   try {
 
-    let temp = null
-    const session = await getSession()
+      const session = await getSession()
 
-    temp = session
+
     const user = await getUser()
     
       if(!user){
@@ -33,7 +32,7 @@ export async function GET(
         })
       }
       if (!session) {
-        temp = await createSession({
+        await createSession({
           id: user.id,
           name: user.name as string,
           email: user.email as string,
@@ -51,7 +50,7 @@ export async function GET(
 }
 
 
-export async function getSession(): Promise<SessionPayload | null> {
+async function getSession(): Promise<SessionPayload | null> {
   // FIXED: Properly await cookies() before using it
   const cookieStore = await cookies()
   const session = cookieStore.get("session")?.value
@@ -81,7 +80,7 @@ export async function getSession(): Promise<SessionPayload | null> {
   return payload
 }
 
-export async function createSession(userData: { id: string; name: string; email: string }): Promise<string> {
+async function createSession(userData: { id: string; name: string; email: string }): Promise<string> {
   const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days
 
   const sessionData: SessionPayload = {
@@ -109,13 +108,13 @@ export async function createSession(userData: { id: string; name: string; email:
   return session
 }
 
-export async function deleteSession(): Promise<void> {
+async function deleteSession(): Promise<void> {
   // FIXED: Properly await cookies() before using it
   const cookieStore = await cookies()
   cookieStore.delete("session")
 }
 
-export async function encrypt(payload: SessionPayload): Promise<string> {
+async function encrypt(payload: SessionPayload): Promise<string> {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -124,7 +123,7 @@ export async function encrypt(payload: SessionPayload): Promise<string> {
 }
 
 // Function to decrypt the JWT session
-export async function decrypt(session: string | undefined = ""): Promise<SessionPayload | null> {
+async function decrypt(session: string | undefined = ""): Promise<SessionPayload | null> {
   try {
     const { payload } = await jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
